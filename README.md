@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/femtotrader/OnlineResampler.jl/workflows/CI/badge.svg)](https://github.com/femtotrader/OnlineResampler.jl/actions)
 [![Coverage](https://codecov.io/gh/femtotrader/OnlineResampler.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/femtotrader/OnlineResampler.jl)
-[![Docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://femtotrader.github.io/OnlineResampler.jl/stable)
+[![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://femtotrader.github.io/OnlineResampler.jl)
 
 A high-performance Julia package for real-time resampling of financial market data. Built on [OnlineStatsBase.jl](https://github.com/joshday/OnlineStatsBase.jl), it provides efficient streaming algorithms for aggregating tick-level market data into OHLC candlesticks and other time-based formats.
 
