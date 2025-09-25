@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>User Guide · OnlineResampler.jl</title><meta name="title" content="User Guide · OnlineResampler.jl"/><meta property="og:title" content="User Guide · OnlineResampler.jl"/><meta property="twitter:title" content="User Guide · OnlineResampler.jl"/><meta name="description" content="Documentation for OnlineResampler.jl."/><meta property="og:description" content="Documentation for OnlineResampler.jl."/><meta property="twitter:description" content="Documentation for OnlineResampler.jl."/><meta property="og:url" content="https://femtotrader.github.io/OnlineResampler.jl/user_guide/"/><meta property="twitter:url" content="https://femtotrader.github.io/OnlineResampler.jl/user_guide/"/><link rel="canonical" href="https://femtotrader.github.io/OnlineResampler.jl/user_guide/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../tutorial/">Tutorial</a></li><li class="is-active"><a class="tocitem" href>User Guide</a><ul class="internal"><li><a class="tocitem" href="#Table-of-Contents"><span>Table of Contents</span></a></li><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Core-Concepts"><span>Core Concepts</span></a></li><li><a class="tocitem" href="#Basic-Usage"><span>Basic Usage</span></a></li><li><a class="tocitem" href="#Advanced-Features"><span>Advanced Features</span></a></li><li><a class="tocitem" href="#Real-World-Examples"><span>Real-World Examples</span></a></li><li><a class="tocitem" href="#Performance-Optimization"><span>Performance Optimization</span></a></li><li><a class="tocitem" href="#Integration-with-OnlineStats"><span>Integration with OnlineStats</span></a></li><li><a class="tocitem" href="#Troubleshooting"><span>Troubleshooting</span></a></li></ul></li><li><a class="tocitem" href="../api_reference/">API Reference</a></li><li><a class="tocitem" href="../edge_cases/">Edge Cases &amp; Limitations</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>User Guide</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>User Guide</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/femtotrader/OnlineResampler.jl" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="User-Guide"><a class="docs-heading-anchor" href="#User-Guide">User Guide</a><a id="User-Guide-1"></a><a class="docs-heading-anchor-permalink" href="#User-Guide" title="Permalink"></a></h1><p>This comprehensive guide covers all aspects of using OnlineResampler.jl for financial market data processing.</p><h2 id="Table-of-Contents"><a class="docs-heading-anchor" href="#Table-of-Contents">Table of Contents</a><a id="Table-of-Contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-Contents" title="Permalink"></a></h2><ol><li><a href="#installation">Installation</a></li><li><a href="#core-concepts">Core Concepts</a></li><li><a href="#basic-usage">Basic Usage</a></li><li><a href="#advanced-features">Advanced Features</a></li><li><a href="#real-world-examples">Real-World Examples</a></li><li><a href="#performance-optimization">Performance Optimization</a></li><li><a href="#integration-with-onlinestats">Integration with OnlineStats</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ol><hr/><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><pre><code class="language-julia hljs">using Pkg
+Pkg.add(url=&quot;https://github.com/femtotrader/OnlineResampler.jl&quot;)</code></pre><h3 id="Development-Installation"><a class="docs-heading-anchor" href="#Development-Installation">Development Installation</a><a id="Development-Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Development-Installation" title="Permalink"></a></h3><pre><code class="language-julia hljs">using Pkg
+Pkg.develop(url=&quot;https://github.com/femtotrader/OnlineResampler.jl&quot;)
+Pkg.test(&quot;OnlineResampler&quot;)</code></pre><hr/><h2 id="Core-Concepts"><a class="docs-heading-anchor" href="#Core-Concepts">Core Concepts</a><a id="Core-Concepts-1"></a><a class="docs-heading-anchor-permalink" href="#Core-Concepts" title="Permalink"></a></h2><h3 id="Market-Data-Structure"><a class="docs-heading-anchor" href="#Market-Data-Structure">Market Data Structure</a><a id="Market-Data-Structure-1"></a><a class="docs-heading-anchor-permalink" href="#Market-Data-Structure" title="Permalink"></a></h3><p>Market data is represented using the <code>MarketDataPoint{T,P,V}</code> structure, which provides type safety and flexibility:</p><pre><code class="language-julia hljs">using OnlineResampler, Dates
+
+# Basic usage with default types (DateTime, Float64, Float64)
+data = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.50, 1000.0)
+
+# Explicit type construction
+data_explicit = MarketDataPoint{DateTime, Float64, Float64}(
+    DateTime(2024, 1, 1, 9, 30, 0),
+    100.50,
+    1000.0
+)
+
+# Custom types for high precision
+using FixedPointDecimals
+precise_data = MarketDataPoint{DateTime, FixedDecimal{Int64,4}, FixedDecimal{Int64,2}}(
+    DateTime(2024, 1, 1, 9, 30, 0),
+    FixedDecimal{Int64,4}(100.5012),
+    FixedDecimal{Int64,2}(1000.50)
+)</code></pre><h3 id="Time-Windows"><a class="docs-heading-anchor" href="#Time-Windows">Time Windows</a><a id="Time-Windows-1"></a><a class="docs-heading-anchor-permalink" href="#Time-Windows" title="Permalink"></a></h3><p>Data is aggregated into time windows defined by start time and period. Understanding time windows is crucial for effective resampling:</p><pre><code class="language-julia hljs">using Dates
+
+# Create a 5-minute window
+window = TimeWindow{DateTime}(DateTime(2024, 1, 1, 9, 30, 0), Minute(5))
+
+# The window includes data from [start_time, start_time + period)
+println(&quot;Window start: $(window.start_time)&quot;)      # 2024-01-01T09:30:00
+println(&quot;Window end: $(window_end(window))&quot;)       # 2024-01-01T09:35:00
+
+# Check if timestamps belong to window
+test_times = [
+    DateTime(2024, 1, 1, 9, 29, 59),  # Before window -&gt; false
+    DateTime(2024, 1, 1, 9, 30, 0),   # Start of window -&gt; true
+    DateTime(2024, 1, 1, 9, 32, 30),  # Middle of window -&gt; true
+    DateTime(2024, 1, 1, 9, 35, 0)    # Next window -&gt; false
+]
+
+for ts in test_times
+    belongs = belongs_to_window(ts, window)
+    println(&quot;$(ts): $(belongs)&quot;)
+end</code></pre><hr/><h2 id="Basic-Usage"><a class="docs-heading-anchor" href="#Basic-Usage">Basic Usage</a><a id="Basic-Usage-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Usage" title="Permalink"></a></h2><h3 id="OHLC-Resampling"><a class="docs-heading-anchor" href="#OHLC-Resampling">OHLC Resampling</a><a id="OHLC-Resampling-1"></a><a class="docs-heading-anchor-permalink" href="#OHLC-Resampling" title="Permalink"></a></h3><p>OHLC (Open, High, Low, Close) resampling is perfect for candlestick charts and technical analysis:</p><pre><code class="language-julia hljs">using OnlineResampler, OnlineStatsBase, Dates
+
+# Create OHLC resampler (this is the default)
+ohlc_resampler = MarketResampler(Minute(1), price_method=:ohlc)
+
+# Sample market data within one minute
+base_time = DateTime(2024, 1, 1, 14, 30, 0)
+market_data = [
+    MarketDataPoint(base_time + Second(0), 100.00, 1000.0),   # Open
+    MarketDataPoint(base_time + Second(15), 102.50, 800.0),   # High point
+    MarketDataPoint(base_time + Second(30), 97.75, 1200.0),   # Low point
+    MarketDataPoint(base_time + Second(45), 101.25, 900.0)    # Close
+]
+
+# Process all data points
+for data in market_data
+    fit!(ohlc_resampler, data)
+end
+
+# Extract results
+result = value(ohlc_resampler)
+ohlc = result.price.ohlc
+
+println(&quot;Open:  $(ohlc.open)&quot;)     # 100.00 (first price)
+println(&quot;High:  $(ohlc.high)&quot;)     # 102.50 (highest price)
+println(&quot;Low:   $(ohlc.low)&quot;)      # 97.75  (lowest price)
+println(&quot;Close: $(ohlc.close)&quot;)    # 101.25 (last price)
+println(&quot;Volume: $(result.volume)&quot;) # 3900.0 (total volume)</code></pre><h3 id="Mean-Price-Resampling"><a class="docs-heading-anchor" href="#Mean-Price-Resampling">Mean Price Resampling</a><a id="Mean-Price-Resampling-1"></a><a class="docs-heading-anchor-permalink" href="#Mean-Price-Resampling" title="Permalink"></a></h3><p>For applications requiring smoothed price data or when you need average prices over time intervals:</p><pre><code class="language-julia hljs"># Create mean price resampler
+mean_resampler = MarketResampler(Minute(5), price_method=:mean)
+
+# Process the same data
+for data in market_data
+    fit!(mean_resampler, data)
+end
+
+result = value(mean_resampler)
+mean_price = result.price.mean_price
+
+println(&quot;Mean Price: $(mean_price)&quot;)  # 100.375 ((100+102.5+97.75+101.25)/4)
+println(&quot;Volume: $(result.volume)&quot;)   # 3900.0</code></pre><hr/><h2 id="Advanced-Features"><a class="docs-heading-anchor" href="#Advanced-Features">Advanced Features</a><a id="Advanced-Features-1"></a><a class="docs-heading-anchor-permalink" href="#Advanced-Features" title="Permalink"></a></h2><h3 id="Custom-Numeric-Types"><a class="docs-heading-anchor" href="#Custom-Numeric-Types">Custom Numeric Types</a><a id="Custom-Numeric-Types-1"></a><a class="docs-heading-anchor-permalink" href="#Custom-Numeric-Types" title="Permalink"></a></h3><p>OnlineResampler fully supports custom numeric types commonly used in financial applications:</p><pre><code class="language-julia hljs">using FixedPointDecimals, NanoDates
+
+# Define high-precision types
+PriceType = FixedDecimal{Int128, 8}    # 8 decimal places for prices
+VolumeType = FixedDecimal{Int64, 2}    # 2 decimal places for volumes
+
+# Create high-precision resampler
+precision_resampler = MarketResampler{NanoDate, PriceType, VolumeType}(
+    Nanosecond(1_000_000_000),  # 1 second intervals
+    price_method=:ohlc
+)
+
+# Create high-precision market data
+nano_data = MarketDataPoint{NanoDate, PriceType, VolumeType}(
+    NanoDate(2024, 1, 1, 9, 30, 0, 123456789),
+    PriceType(100.12345678),
+    VolumeType(1000.50)
+)
+
+fit!(precision_resampler, nano_data)
+result = value(precision_resampler)
+
+println(&quot;High-precision OHLC: $(result.price.ohlc)&quot;)
+println(&quot;High-precision Volume: $(result.volume)&quot;)</code></pre><h3 id="Parallel-Processing"><a class="docs-heading-anchor" href="#Parallel-Processing">Parallel Processing</a><a id="Parallel-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Parallel-Processing" title="Permalink"></a></h3><p>OnlineResampler supports efficient merging for parallel data processing:</p><pre><code class="language-julia hljs"># Function to process a chunk of data
+function process_chunk(data_chunk::Vector, period::Period)
+    chunk_resampler = OHLCResampler{DateTime, Float64, Float64}(period)
+    for data in data_chunk
+        fit!(chunk_resampler, data)
+    end
+    return chunk_resampler
+end
+
+# Generate large dataset
+large_dataset = [
+    MarketDataPoint(DateTime(2024, 1, 1, 9, 0, i), 100.0 + sin(i/100), rand(500:1500))
+    for i in 1:10000
+]
+
+# Split into chunks for parallel processing
+chunk_size = 2500
+chunks = [large_dataset[i:min(i+chunk_size-1, end)] for i in 1:chunk_size:length(large_dataset)]
+
+# Process chunks (in real applications, use @distributed or threading)
+chunk_resamplers = [process_chunk(chunk, Minute(1)) for chunk in chunks]
+
+# Merge all results
+final_resampler = chunk_resamplers[1]
+for i in 2:length(chunk_resamplers)
+    merge!(final_resampler, chunk_resamplers[i])
+end
+
+merged_result = value(final_resampler)
+println(&quot;Merged OHLC: $(merged_result.ohlc)&quot;)
+println(&quot;Total observations: $(nobs(final_resampler))&quot;)</code></pre><h3 id="Individual-Resamplers"><a class="docs-heading-anchor" href="#Individual-Resamplers">Individual Resamplers</a><a id="Individual-Resamplers-1"></a><a class="docs-heading-anchor-permalink" href="#Individual-Resamplers" title="Permalink"></a></h3><p>For specialized use cases, you can use individual resampler types directly:</p><pre><code class="language-julia hljs"># Pure OHLC resampler
+ohlc_only = OHLCResampler{DateTime, Float64, Float64}(Minute(1))
+
+# Mean price resampler
+mean_only = MeanResampler{DateTime, Float64, Float64}(Minute(5))
+
+# Sum resampler (for volume or other additive metrics)
+volume_sum = SumResampler{DateTime, Float64, Float64}(Second(30))
+
+# Process sample data
+sample_data = MarketDataPoint(DateTime(2024, 1, 1, 10, 0, 0), 100.0, 1000.0)
+
+fit!(ohlc_only, sample_data)
+fit!(mean_only, sample_data)
+fit!(volume_sum, sample_data)
+
+# Get individual results
+ohlc_result = value(ohlc_only)
+mean_result = value(mean_only)
+volume_result = value(volume_sum)
+
+println(&quot;OHLC only: $(ohlc_result)&quot;)
+println(&quot;Mean only: $(mean_result)&quot;)
+println(&quot;Volume sum: $(volume_result)&quot;)</code></pre><hr/><h2 id="Real-World-Examples"><a class="docs-heading-anchor" href="#Real-World-Examples">Real-World Examples</a><a id="Real-World-Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Real-World-Examples" title="Permalink"></a></h2><h3 id="Processing-CSV-Market-Data"><a class="docs-heading-anchor" href="#Processing-CSV-Market-Data">Processing CSV Market Data</a><a id="Processing-CSV-Market-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Processing-CSV-Market-Data" title="Permalink"></a></h3><p>Here&#39;s a complete example processing market data from a CSV file:</p><pre><code class="language-julia hljs">using OnlineResampler, OnlineStatsBase, Dates, CSV, DataFrames
+
+# Load tick data from CSV file
+tick_data = CSV.read(&quot;market_ticks.csv&quot;, DataFrame)
+
+# Create 1-minute OHLC resampler
+resampler = MarketResampler(Minute(1))
+
+# Storage for completed OHLC bars
+ohlc_bars = []
+current_window = nothing
+
+# Process each tick
+for row in eachrow(tick_data)
+    # Create market data point
+    data_point = MarketDataPoint(
+        DateTime(row.timestamp),
+        row.price,
+        row.volume
+    )
+
+    # Get current window before processing
+    old_window = value(resampler).window
+
+    # Process the data
+    fit!(resampler, data_point)
+
+    # Check if we moved to a new window (completed a bar)
+    new_result = value(resampler)
+    if new_result.window != old_window &amp;&amp; old_window !== nothing
+        # We completed a window, save the OHLC bar
+        old_result = # You&#39;ll need to store this before processing new data
+        push!(ohlc_bars, (
+            timestamp = old_window.start_time,
+            open = old_result.price.ohlc.open,
+            high = old_result.price.ohlc.high,
+            low = old_result.price.ohlc.low,
+            close = old_result.price.ohlc.close,
+            volume = old_result.volume
+        ))
+    end
+end
+
+# Convert to DataFrame for analysis
+ohlc_df = DataFrame(ohlc_bars)
+println(&quot;Generated $(nrow(ohlc_df)) OHLC bars from $(nrow(tick_data)) ticks&quot;)
+
+# Save results
+CSV.write(&quot;ohlc_1min.csv&quot;, ohlc_df)</code></pre><h3 id="Multi-timeframe-Analysis"><a class="docs-heading-anchor" href="#Multi-timeframe-Analysis">Multi-timeframe Analysis</a><a id="Multi-timeframe-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-timeframe-Analysis" title="Permalink"></a></h3><p>Analyze the same data stream across multiple timeframes simultaneously:</p><pre><code class="language-julia hljs"># Create resamplers for different timeframes
+timeframes = Dict(
+    &quot;1min&quot; =&gt; MarketResampler(Minute(1)),
+    &quot;5min&quot; =&gt; MarketResampler(Minute(5)),
+    &quot;15min&quot; =&gt; MarketResampler(Minute(15)),
+    &quot;1hour&quot; =&gt; MarketResampler(Hour(1))
+)
+
+# Generate sample data (simulating 1 hour of minute-level ticks)
+base_time = DateTime(2024, 1, 1, 9, 0, 0)
+sample_ticks = []
+
+price = 100.0
+for i in 1:60  # 60 minutes
+    # Add some realistic price movement
+    price += randn() * 0.1  # Random walk
+    volume = rand(500:1500)
+    timestamp = base_time + Minute(i)
+
+    push!(sample_ticks, MarketDataPoint(timestamp, price, volume))
+end
+
+# Process through all timeframes
+for tick in sample_ticks
+    for (name, resampler) in timeframes
+        fit!(resampler, tick)
+    end
+end
+
+# Display results
+println(&quot;Multi-timeframe Analysis:&quot;)
+println(&quot;========================&quot;)
+for (name, resampler) in sort(collect(timeframes))
+    result = value(resampler)
+    if result.price.ohlc !== nothing
+        ohlc = result.price.ohlc
+        @printf(&quot;%-8s: O=%6.2f H=%6.2f L=%6.2f C=%6.2f Vol=%8.0f\\n&quot;,
+                name, ohlc.open, ohlc.high, ohlc.low, ohlc.close, result.volume)
+    end
+end</code></pre><hr/><h2 id="Performance-Optimization"><a class="docs-heading-anchor" href="#Performance-Optimization">Performance Optimization</a><a id="Performance-Optimization-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Optimization" title="Permalink"></a></h2><h3 id="Memory-Efficiency"><a class="docs-heading-anchor" href="#Memory-Efficiency">Memory Efficiency</a><a id="Memory-Efficiency-1"></a><a class="docs-heading-anchor-permalink" href="#Memory-Efficiency" title="Permalink"></a></h3><p>OnlineResampler uses constant memory regardless of data volume:</p><pre><code class="language-julia hljs"># Memory usage stays constant even with millions of data points
+memory_test_resampler = MarketResampler(Minute(1))
+
+println(&quot;Processing 1 million data points...&quot;)
+for i in 1:1_000_000
+    timestamp = DateTime(2024, 1, 1, 9, 0, 0) + Millisecond(i)
+    data = MarketDataPoint(timestamp, 100.0 + sin(i/1000), 1000.0)
+    fit!(memory_test_resampler, data)
+
+    # Memory usage remains constant due to automatic window transitions
+end
+
+result = value(memory_test_resampler)
+println(&quot;Current window has $(nobs(memory_test_resampler)) observations&quot;)
+println(&quot;Total memory usage is O(1) - constant regardless of data volume processed&quot;)</code></pre><h3 id="Type-Stability"><a class="docs-heading-anchor" href="#Type-Stability">Type Stability</a><a id="Type-Stability-1"></a><a class="docs-heading-anchor-permalink" href="#Type-Stability" title="Permalink"></a></h3><p>For maximum performance, use concrete types and avoid type instabilities:</p><pre><code class="language-julia hljs"># Good: Concrete types enable compiler optimizations
+function high_performance_processing(
+    resampler::MarketResampler{DateTime, Float64, Float64},
+    data_stream::Vector{MarketDataPoint{DateTime, Float64, Float64}}
+)
+    for data in data_stream
+        fit!(resampler, data)
+    end
+    return value(resampler)
+end
+
+# Usage
+fast_resampler = MarketResampler{DateTime, Float64, Float64}(Minute(1))
+typed_data = MarketDataPoint{DateTime, Float64, Float64}[]
+
+# This will be highly optimized by the Julia compiler
+result = high_performance_processing(fast_resampler, typed_data)</code></pre><h3 id="Batch-Processing"><a class="docs-heading-anchor" href="#Batch-Processing">Batch Processing</a><a id="Batch-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Batch-Processing" title="Permalink"></a></h3><p>Process data in batches for optimal performance:</p><pre><code class="language-julia hljs">function batch_process_ticks(resampler, ticks::Vector)
+    # Process all ticks without intermediate value() calls
+    for tick in ticks
+        fit!(resampler, tick)
+    end
+
+    # Get result only once at the end
+    return value(resampler)
+end
+
+# This approach is faster than calling value() after each fit!()
+batch_resampler = MarketResampler(Minute(1))
+batch_ticks = [
+    MarketDataPoint(DateTime(2024, 1, 1, 9, 30, i), 100.0 + randn(), 1000.0)
+    for i in 1:1000
+]
+
+result = batch_process_ticks(batch_resampler, batch_ticks)</code></pre><h3 id="Performance-Benchmarks"><a class="docs-heading-anchor" href="#Performance-Benchmarks">Performance Benchmarks</a><a id="Performance-Benchmarks-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Benchmarks" title="Permalink"></a></h3><p>Here are typical performance characteristics:</p><pre><code class="language-julia hljs">using BenchmarkTools
+
+# Setup
+resampler = MarketResampler(Minute(1))
+data = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0)
+
+# Single operation benchmark
+@benchmark fit!($resampler, $data)
+# Typical: ~50ns per operation
+
+# Batch processing benchmark
+data_batch = [MarketDataPoint(DateTime(2024, 1, 1, 9, 30, i), rand(90:110), rand(500:1500)) for i in 1:10000]
+batch_resampler = MarketResampler(Minute(1))
+
+@benchmark begin
+    for d in $data_batch
+        fit!($batch_resampler, d)
+    end
+end
+# Typical: ~500μs for 10,000 operations (~50ns per operation)</code></pre><p>Expected performance characteristics:</p><ul><li><strong>Single operation</strong>: ~50 nanoseconds</li><li><strong>Memory usage</strong>: O(1) constant</li><li><strong>Throughput</strong>: &gt;2 million operations/second on modern hardware</li><li><strong>Memory allocations</strong>: Zero in steady state</li></ul><hr/><h2 id="Integration-with-OnlineStats"><a class="docs-heading-anchor" href="#Integration-with-OnlineStats">Integration with OnlineStats</a><a id="Integration-with-OnlineStats-1"></a><a class="docs-heading-anchor-permalink" href="#Integration-with-OnlineStats" title="Permalink"></a></h2><p>OnlineResampler seamlessly integrates with the broader OnlineStats ecosystem:</p><pre><code class="language-julia hljs">using OnlineStats
+
+# Combine market resampling with other online statistics
+combined_stats = Group(
+    MarketResampler(Minute(1)),    # Market data resampling
+    Mean(),                        # Overall price mean
+    Variance(),                    # Price variance
+    CountMinSketch(String, 1000)   # Frequent symbols (if processing multiple assets)
+)
+
+# Generate sample data
+data_stream = [
+    MarketDataPoint(DateTime(2024, 1, 1, 9, 30, i), 100.0 + randn(), 1000.0)
+    for i in 1:1000
+]
+
+# Process all statistics simultaneously
+for data in data_stream
+    # The Group expects a tuple matching all statistics
+    fit!(combined_stats, (data, data.price, data.price))
+end
+
+# Access individual statistics
+resampler_result = value(combined_stats[1])  # MarketResampler results
+mean_price = value(combined_stats[2])        # Mean price
+price_variance = value(combined_stats[3])    # Price variance
+
+println(&quot;OHLC: $(resampler_result.price.ohlc)&quot;)
+println(&quot;Mean price: $(mean_price)&quot;)
+println(&quot;Price variance: $(price_variance)&quot;)</code></pre><h3 id="Custom-OnlineStats-Integration"><a class="docs-heading-anchor" href="#Custom-OnlineStats-Integration">Custom OnlineStats Integration</a><a id="Custom-OnlineStats-Integration-1"></a><a class="docs-heading-anchor-permalink" href="#Custom-OnlineStats-Integration" title="Permalink"></a></h3><p>You can also create custom statistics that work with market data:</p><pre><code class="language-julia hljs">using OnlineStatsBase
+
+# Custom statistic: Price range tracker
+mutable struct PriceRange &lt;: OnlineStat{MarketDataPoint}
+    min_price::Float64
+    max_price::Float64
+    n::Int
+
+    PriceRange() = new(Inf, -Inf, 0)
+end
+
+function OnlineStatsBase._fit!(stat::PriceRange, data::MarketDataPoint)
+    stat.min_price = min(stat.min_price, data.price)
+    stat.max_price = max(stat.max_price, data.price)
+    stat.n += 1
+    return stat
+end
+
+function OnlineStatsBase.value(stat::PriceRange)
+    return (min=stat.min_price, max=stat.max_price, range=stat.max_price - stat.min_price)
+end
+
+OnlineStatsBase.nobs(stat::PriceRange) = stat.n
+
+# Usage
+price_range = PriceRange()
+market_data = [MarketDataPoint(DateTime(2024, 1, 1, 9, 30, i), 100.0 + randn() * 5, 1000.0) for i in 1:100]
+
+for data in market_data
+    fit!(price_range, data)
+end
+
+range_result = value(price_range)
+println(&quot;Price range: $(range_result.min) to $(range_result.max)&quot;)
+println(&quot;Total range: $(range_result.range)&quot;)</code></pre><hr/><h2 id="Troubleshooting"><a class="docs-heading-anchor" href="#Troubleshooting">Troubleshooting</a><a id="Troubleshooting-1"></a><a class="docs-heading-anchor-permalink" href="#Troubleshooting" title="Permalink"></a></h2><h3 id="Common-Issues-and-Solutions"><a class="docs-heading-anchor" href="#Common-Issues-and-Solutions">Common Issues and Solutions</a><a id="Common-Issues-and-Solutions-1"></a><a class="docs-heading-anchor-permalink" href="#Common-Issues-and-Solutions" title="Permalink"></a></h3><h4 id="Type-Mismatch-Errors"><a class="docs-heading-anchor" href="#Type-Mismatch-Errors">Type Mismatch Errors</a><a id="Type-Mismatch-Errors-1"></a><a class="docs-heading-anchor-permalink" href="#Type-Mismatch-Errors" title="Permalink"></a></h4><pre><code class="language-julia hljs"># Problem: Type mismatch
+resampler = MarketResampler{DateTime, Float64, Float64}(Minute(1))
+bad_data = MarketDataPoint{DateTime, Int64, Float64}(DateTime(2024, 1, 1, 9, 30, 0), 100, 1000.0)
+
+# This will fail:
+# fit!(resampler, bad_data)  # ERROR: MethodError
+
+# Solution: Ensure consistent types
+good_data = MarketDataPoint{DateTime, Float64, Float64}(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0)
+fit!(resampler, good_data)  # Works fine</code></pre><h4 id="Window-Alignment-Issues"><a class="docs-heading-anchor" href="#Window-Alignment-Issues">Window Alignment Issues</a><a id="Window-Alignment-Issues-1"></a><a class="docs-heading-anchor-permalink" href="#Window-Alignment-Issues" title="Permalink"></a></h4><pre><code class="language-julia hljs"># Problem: Unexpected window boundaries
+resampler = MarketResampler(Minute(1))
+
+# Data that doesn&#39;t align with minute boundaries
+misaligned_data = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 37), 100.0, 1000.0)
+fit!(resampler, misaligned_data)
+
+result = value(resampler)
+println(&quot;Window starts at: $(result.window.start_time)&quot;)  # 2024-01-01T09:30:00
+
+# Solution: Understand that windows are floor-aligned
+# The window will start at 9:30:00 even though data arrived at 9:30:37</code></pre><h4 id="Memory-Issues-with-Large-Datasets"><a class="docs-heading-anchor" href="#Memory-Issues-with-Large-Datasets">Memory Issues with Large Datasets</a><a id="Memory-Issues-with-Large-Datasets-1"></a><a class="docs-heading-anchor-permalink" href="#Memory-Issues-with-Large-Datasets" title="Permalink"></a></h4><pre><code class="language-julia hljs"># Problem: Processing very large datasets inefficiently
+function inefficient_processing(large_dataset)
+    results = []
+    resampler = MarketResampler(Minute(1))
+
+    for data in large_dataset
+        fit!(resampler, data)
+        push!(results, value(resampler))  # DON&#39;T DO THIS - stores everything
+    end
+
+    return results
+end
+
+# Solution: Only store what you need
+function efficient_processing(large_dataset)
+    completed_bars = []
+    resampler = MarketResampler(Minute(1))
+    current_window = nothing
+
+    for data in large_dataset
+        old_result = value(resampler)
+        old_window = old_result.window
+
+        fit!(resampler, data)
+
+        new_result = value(resampler)
+        if new_result.window != old_window &amp;&amp; old_window !== nothing
+            # Only store completed bars
+            push!(completed_bars, (
+                timestamp = old_window.start_time,
+                ohlc = old_result.price.ohlc,
+                volume = old_result.volume
+            ))
+        end
+    end
+
+    return completed_bars
+end</code></pre><h3 id="Performance-Debugging"><a class="docs-heading-anchor" href="#Performance-Debugging">Performance Debugging</a><a id="Performance-Debugging-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Debugging" title="Permalink"></a></h3><p>If you&#39;re experiencing performance issues:</p><pre><code class="language-julia hljs">using Profile
+
+function profile_resampling()
+    resampler = MarketResampler(Minute(1))
+    data_stream = [MarketDataPoint(DateTime(2024, 1, 1, 9, 30, i), 100.0, 1000.0) for i in 1:100000]
+
+    @profile begin
+        for data in data_stream
+            fit!(resampler, data)
+        end
+    end
+end
+
+profile_resampling()
+Profile.print()  # Analyze where time is spent</code></pre><h3 id="Validation-and-Testing"><a class="docs-heading-anchor" href="#Validation-and-Testing">Validation and Testing</a><a id="Validation-and-Testing-1"></a><a class="docs-heading-anchor-permalink" href="#Validation-and-Testing" title="Permalink"></a></h3><p>Always validate your results:</p><pre><code class="language-julia hljs">function validate_ohlc(ohlc::OHLC)
+    @assert ohlc.high &gt;= ohlc.open &quot;High should be &gt;= Open&quot;
+    @assert ohlc.high &gt;= ohlc.close &quot;High should be &gt;= Close&quot;
+    @assert ohlc.low &lt;= ohlc.open &quot;Low should be &lt;= Open&quot;
+    @assert ohlc.low &lt;= ohlc.close &quot;Low should be &lt;= Close&quot;
+    @assert ohlc.high &gt;= ohlc.low &quot;High should be &gt;= Low&quot;
+end
+
+# Use in your processing pipeline
+resampler = MarketResampler(Minute(1))
+# ... process data ...
+result = value(resampler)
+
+if result.price.ohlc !== nothing
+    validate_ohlc(result.price.ohlc)
+    println(&quot;OHLC validation passed ✓&quot;)
+end</code></pre><hr/><p>This user guide covers the essential aspects of using OnlineResampler.jl effectively. For more detailed API information, see the <a href="../api_reference/">API Reference</a>, and for step-by-step learning, check out the <a href="../tutorial/">Tutorial</a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../tutorial/">« Tutorial</a><a class="docs-footer-nextpage" href="../api_reference/">API Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Thursday 25 September 2025 12:11">Thursday 25 September 2025</span>. Using Julia version 1.11.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

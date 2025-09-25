@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · OnlineResampler.jl</title><meta name="title" content="Tutorial · OnlineResampler.jl"/><meta property="og:title" content="Tutorial · OnlineResampler.jl"/><meta property="twitter:title" content="Tutorial · OnlineResampler.jl"/><meta name="description" content="Documentation for OnlineResampler.jl."/><meta property="og:description" content="Documentation for OnlineResampler.jl."/><meta property="twitter:description" content="Documentation for OnlineResampler.jl."/><meta property="og:url" content="https://femtotrader.github.io/OnlineResampler.jl/tutorial/"/><meta property="twitter:url" content="https://femtotrader.github.io/OnlineResampler.jl/tutorial/"/><link rel="canonical" href="https://femtotrader.github.io/OnlineResampler.jl/tutorial/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Table-of-Contents"><span>Table of Contents</span></a></li><li><a class="tocitem" href="#Getting-Started"><span>Getting Started</span></a></li><li><a class="tocitem" href="#Basic-Resampling"><span>Basic Resampling</span></a></li><li><a class="tocitem" href="#Chronological-Data-Validation"><span>Chronological Data Validation</span></a></li><li><a class="tocitem" href="#Understanding-Time-Windows"><span>Understanding Time Windows</span></a></li><li><a class="tocitem" href="#Working-with-Different-Data-Types"><span>Working with Different Data Types</span></a></li><li><a class="tocitem" href="#Advanced-Resampling-Strategies"><span>Advanced Resampling Strategies</span></a></li><li><a class="tocitem" href="#Real-time-Data-Processing"><span>Real-time Data Processing</span></a></li><li><a class="tocitem" href="#Performance-Optimization"><span>Performance Optimization</span></a></li><li><a class="tocitem" href="#Best-Practices"><span>Best Practices</span></a></li><li><a class="tocitem" href="#Conclusion"><span>Conclusion</span></a></li><li><a class="tocitem" href="#Next-Steps"><span>Next Steps</span></a></li></ul></li><li><a class="tocitem" href="../user_guide/">User Guide</a></li><li><a class="tocitem" href="../api_reference/">API Reference</a></li><li><a class="tocitem" href="../edge_cases/">Edge Cases &amp; Limitations</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/femtotrader/OnlineResampler.jl" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="OnlineResampler.jl-Tutorial"><a class="docs-heading-anchor" href="#OnlineResampler.jl-Tutorial">OnlineResampler.jl Tutorial</a><a id="OnlineResampler.jl-Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#OnlineResampler.jl-Tutorial" title="Permalink"></a></h1><p>This tutorial will guide you through the main features of OnlineResampler.jl, from basic usage to advanced applications.</p><h2 id="Table-of-Contents"><a class="docs-heading-anchor" href="#Table-of-Contents">Table of Contents</a><a id="Table-of-Contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-Contents" title="Permalink"></a></h2><ol><li><a href="#getting-started">Getting Started</a></li><li><a href="#basic-resampling">Basic Resampling</a></li><li><a href="#understanding-time-windows">Understanding Time Windows</a></li><li><a href="#working-with-different-data-types">Working with Different Data Types</a></li><li><a href="#advanced-resampling-strategies">Advanced Resampling Strategies</a></li><li><a href="#real-time-data-processing">Real-time Data Processing</a></li><li><a href="#performance-optimization">Performance Optimization</a></li><li><a href="#best-practices">Best Practices</a></li></ol><hr/><h2 id="Getting-Started"><a class="docs-heading-anchor" href="#Getting-Started">Getting Started</a><a id="Getting-Started-1"></a><a class="docs-heading-anchor-permalink" href="#Getting-Started" title="Permalink"></a></h2><h3 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h3><pre><code class="language-julia hljs">using Pkg
+Pkg.add(url=&quot;https://github.com/femtotrader/OnlineResampler.jl&quot;)</code></pre><h3 id="Basic-Setup"><a class="docs-heading-anchor" href="#Basic-Setup">Basic Setup</a><a id="Basic-Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Setup" title="Permalink"></a></h3><pre><code class="language-julia hljs">using OnlineResampler, OnlineStatsBase, Dates</code></pre><h3 id="Your-First-Resampler"><a class="docs-heading-anchor" href="#Your-First-Resampler">Your First Resampler</a><a id="Your-First-Resampler-1"></a><a class="docs-heading-anchor-permalink" href="#Your-First-Resampler" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Create a simple 1-minute OHLC resampler
+resampler = MarketResampler(Minute(1))
+
+# Create some sample market data
+data1 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0)
+data2 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 105.0, 800.0)
+data3 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 45), 98.0, 1200.0)
+
+# Process the data
+fit!(resampler, data1)
+fit!(resampler, data2)
+fit!(resampler, data3)
+
+# Get the results
+result = value(resampler)
+println(&quot;OHLC: $(result.price.ohlc)&quot;)
+println(&quot;Volume: $(result.volume)&quot;)</code></pre><p><strong>Output:</strong></p><pre><code class="nohighlight hljs">OHLC: OHLC(100.0, 105.0, 98.0, 98.0)
+Volume: 3000.0</code></pre><hr/><h2 id="Basic-Resampling"><a class="docs-heading-anchor" href="#Basic-Resampling">Basic Resampling</a><a id="Basic-Resampling-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Resampling" title="Permalink"></a></h2><h3 id="OHLC-(Open,-High,-Low,-Close)-Resampling"><a class="docs-heading-anchor" href="#OHLC-(Open,-High,-Low,-Close)-Resampling">OHLC (Open, High, Low, Close) Resampling</a><a id="OHLC-(Open,-High,-Low,-Close)-Resampling-1"></a><a class="docs-heading-anchor-permalink" href="#OHLC-(Open,-High,-Low,-Close)-Resampling" title="Permalink"></a></h3><p>OHLC resampling is the most common way to aggregate tick data into candlestick charts:</p><pre><code class="language-julia hljs"># Create OHLC resampler (this is the default)
+ohlc_resampler = MarketResampler(Minute(1), price_method=:ohlc)
+
+# Sample tick data within one minute
+base_time = DateTime(2024, 1, 1, 14, 30, 0)
+ticks = [
+    MarketDataPoint(base_time + Second(0), 100.00, 1000.0),   # Open
+    MarketDataPoint(base_time + Second(15), 102.50, 800.0),   # High
+    MarketDataPoint(base_time + Second(30), 97.75, 1200.0),   # Low
+    MarketDataPoint(base_time + Second(45), 101.25, 900.0)    # Close
+]
+
+# Process all ticks
+for tick in ticks
+    fit!(ohlc_resampler, tick)
+end
+
+result = value(ohlc_resampler)
+ohlc = result.price.ohlc
+
+println(&quot;Open:  $(ohlc.open)&quot;)     # 100.00 (first price)
+println(&quot;High:  $(ohlc.high)&quot;)     # 102.50 (highest price)
+println(&quot;Low:   $(ohlc.low)&quot;)      # 97.75  (lowest price)
+println(&quot;Close: $(ohlc.close)&quot;)    # 101.25 (last price)
+println(&quot;Volume: $(result.volume)&quot;) # 3900.0 (total volume)</code></pre><h3 id="Mean-Price-Resampling"><a class="docs-heading-anchor" href="#Mean-Price-Resampling">Mean Price Resampling</a><a id="Mean-Price-Resampling-1"></a><a class="docs-heading-anchor-permalink" href="#Mean-Price-Resampling" title="Permalink"></a></h3><p>For applications requiring smoothed price data:</p><pre><code class="language-julia hljs"># Create mean price resampler
+mean_resampler = MarketResampler(Minute(5), price_method=:mean)
+
+# Process the same data
+for tick in ticks
+    fit!(mean_resampler, tick)
+end
+
+result = value(mean_resampler)
+mean_price = result.price.mean_price
+
+println(&quot;Mean Price: $(mean_price)&quot;)  # 100.375 ((100+102.5+97.75+101.25)/4)
+println(&quot;Volume: $(result.volume)&quot;)   # 3900.0</code></pre><h2 id="Chronological-Data-Validation"><a class="docs-heading-anchor" href="#Chronological-Data-Validation">Chronological Data Validation</a><a id="Chronological-Data-Validation-1"></a><a class="docs-heading-anchor-permalink" href="#Chronological-Data-Validation" title="Permalink"></a></h2><p>OnlineResampler is designed for streaming data and assumes chronological order. You can enable validation to detect and prevent out-of-order data:</p><h3 id="Default-Behavior-(No-Validation)"><a class="docs-heading-anchor" href="#Default-Behavior-(No-Validation)">Default Behavior (No Validation)</a><a id="Default-Behavior-(No-Validation)-1"></a><a class="docs-heading-anchor-permalink" href="#Default-Behavior-(No-Validation)" title="Permalink"></a></h3><pre><code class="language-julia hljs"># By default, validation is disabled for performance
+resampler = MarketResampler(Minute(1))  # validate_chronological=false by default
+
+# This allows out-of-order data but may cause unexpected behavior
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 29, 0), 99.0, 800.0))   # Out of order!</code></pre><h3 id="Enabled-Validation"><a class="docs-heading-anchor" href="#Enabled-Validation">Enabled Validation</a><a id="Enabled-Validation-1"></a><a class="docs-heading-anchor-permalink" href="#Enabled-Validation" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Enable chronological validation
+validated_resampler = MarketResampler(Minute(1), validate_chronological=true)
+
+# Process data chronologically - this works fine
+fit!(validated_resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))
+fit!(validated_resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 105.0, 800.0))
+
+# This will throw an ArgumentError with detailed message
+try
+    fit!(validated_resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 15), 95.0, 1200.0))
+catch e
+    println(&quot;Error: Out-of-order data detected!&quot;)
+    # ArgumentError: Data not in chronological order: 2024-01-01T09:30:15 &lt;= 2024-01-01T09:30:30
+end</code></pre><p><strong>When to use validation:</strong></p><ul><li>✅ When processing historical data that might be unsorted</li><li>✅ When debugging data quality issues</li><li>✅ When data integrity is critical</li><li>❌ High-frequency real-time streams (performance impact)</li><li>❌ When you&#39;re certain data is already chronologically ordered</li></ul><hr/><h2 id="Understanding-Time-Windows"><a class="docs-heading-anchor" href="#Understanding-Time-Windows">Understanding Time Windows</a><a id="Understanding-Time-Windows-1"></a><a class="docs-heading-anchor-permalink" href="#Understanding-Time-Windows" title="Permalink"></a></h2><p>Time windows are fundamental to how OnlineResampler groups data:</p><h3 id="How-Time-Windows-Work"><a class="docs-heading-anchor" href="#How-Time-Windows-Work">How Time Windows Work</a><a id="How-Time-Windows-Work-1"></a><a class="docs-heading-anchor-permalink" href="#How-Time-Windows-Work" title="Permalink"></a></h3><pre><code class="language-julia hljs">using Dates
+
+# Create a 1-minute window starting at 9:30 AM
+window = TimeWindow{DateTime}(DateTime(2024, 1, 1, 9, 30, 0), Minute(1))
+
+# The window covers [9:30:00, 9:31:00)
+println(&quot;Window start: $(window.start_time)&quot;)          # 2024-01-01T09:30:00
+println(&quot;Window end: $(window_end(window))&quot;)           # 2024-01-01T09:31:00
+
+# Test timestamps
+timestamps = [
+    DateTime(2024, 1, 1, 9, 29, 59),  # Before window
+    DateTime(2024, 1, 1, 9, 30, 0),   # Start of window
+    DateTime(2024, 1, 1, 9, 30, 30),  # Middle of window
+    DateTime(2024, 1, 1, 9, 31, 0)    # Start of next window
+]
+
+for ts in timestamps
+    belongs = belongs_to_window(ts, window)
+    println(&quot;$(ts): $(belongs)&quot;)
+end</code></pre><p><strong>Output:</strong></p><pre><code class="nohighlight hljs">2024-01-01T09:29:59: false
+2024-01-01T09:30:00: true
+2024-01-01T09:30:30: true
+2024-01-01T09:31:00: false</code></pre><h3 id="Window-Transitions"><a class="docs-heading-anchor" href="#Window-Transitions">Window Transitions</a><a id="Window-Transitions-1"></a><a class="docs-heading-anchor-permalink" href="#Window-Transitions" title="Permalink"></a></h3><p>Resamplers automatically handle window transitions:</p><pre><code class="language-julia hljs">resampler = MarketResampler(Minute(1))
+
+# First window data
+data1 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0)
+data2 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 105.0, 800.0)
+
+# Second window data (next minute)
+data3 = MarketDataPoint(DateTime(2024, 1, 1, 9, 31, 0), 110.0, 1200.0)
+data4 = MarketDataPoint(DateTime(2024, 1, 1, 9, 31, 30), 108.0, 900.0)
+
+# Process first window
+fit!(resampler, data1)
+fit!(resampler, data2)
+result1 = value(resampler)
+println(&quot;First window OHLC: $(result1.price.ohlc)&quot;)
+println(&quot;Window: $(result1.window.start_time)&quot;)
+
+# Process second window - resampler automatically resets
+fit!(resampler, data3)
+fit!(resampler, data4)
+result2 = value(resampler)
+println(&quot;Second window OHLC: $(result2.price.ohlc)&quot;)
+println(&quot;Window: $(result2.window.start_time)&quot;)</code></pre><hr/><h2 id="Working-with-Different-Data-Types"><a class="docs-heading-anchor" href="#Working-with-Different-Data-Types">Working with Different Data Types</a><a id="Working-with-Different-Data-Types-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-Different-Data-Types" title="Permalink"></a></h2><h3 id="High-Precision-Financial-Data"><a class="docs-heading-anchor" href="#High-Precision-Financial-Data">High-Precision Financial Data</a><a id="High-Precision-Financial-Data-1"></a><a class="docs-heading-anchor-permalink" href="#High-Precision-Financial-Data" title="Permalink"></a></h3><p>OnlineResampler supports custom numeric types for high-precision calculations:</p><pre><code class="language-julia hljs"># Using Rational numbers for exact arithmetic
+PrecisePrice = Rational{Int128}
+PreciseVolume = Rational{Int64}
+
+# Create high-precision resampler
+precise_resampler = MarketResampler{DateTime, PrecisePrice, PreciseVolume}(
+    Minute(1), price_method=:ohlc
+)
+
+# High-precision data
+precise_data = MarketDataPoint{DateTime, PrecisePrice, PreciseVolume}(
+    DateTime(2024, 1, 1, 9, 30, 0),
+    PrecisePrice(1001234, 10000),  # 100.1234 exactly
+    PreciseVolume(10005, 10)       # 1000.5 exactly
+)
+
+fit!(precise_resampler, precise_data)
+result = value(precise_resampler)
+
+println(&quot;Precise OHLC: $(result.price.ohlc)&quot;)
+println(&quot;Precise Volume: $(result.volume)&quot;)</code></pre><h3 id="Custom-Time-Types"><a class="docs-heading-anchor" href="#Custom-Time-Types">Custom Time Types</a><a id="Custom-Time-Types-1"></a><a class="docs-heading-anchor-permalink" href="#Custom-Time-Types" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Example with custom time handling (conceptual)
+# In practice, you&#39;d use libraries like NanoDates.jl or TimeZones.jl
+
+# Standard DateTime usage
+datetime_resampler = MarketResampler{DateTime, Float64, Float64}(Minute(1))
+
+# The resampler will work with any type T that supports:
+# - T + Period -&gt; T (arithmetic)
+# - T comparison operators
+# - floor(T, Period) -&gt; T (for window alignment)</code></pre><hr/><h2 id="Advanced-Resampling-Strategies"><a class="docs-heading-anchor" href="#Advanced-Resampling-Strategies">Advanced Resampling Strategies</a><a id="Advanced-Resampling-Strategies-1"></a><a class="docs-heading-anchor-permalink" href="#Advanced-Resampling-Strategies" title="Permalink"></a></h2><h3 id="Individual-Resamplers"><a class="docs-heading-anchor" href="#Individual-Resamplers">Individual Resamplers</a><a id="Individual-Resamplers-1"></a><a class="docs-heading-anchor-permalink" href="#Individual-Resamplers" title="Permalink"></a></h3><p>For specialized use cases, you can use individual resampler types:</p><pre><code class="language-julia hljs"># Pure OHLC resampler
+ohlc_only = OHLCResampler(Minute(1))
+
+# Mean price resampler
+mean_only = MeanResampler(Minute(5))
+
+# Volume sum resampler
+volume_sum = SumResampler(Second(30))
+
+# Process data
+sample_data = MarketDataPoint(DateTime(2024, 1, 1, 10, 0, 0), 100.0, 1000.0)
+
+fit!(ohlc_only, sample_data)
+fit!(mean_only, sample_data)
+fit!(volume_sum, sample_data)
+
+# Get individual results
+ohlc_result = value(ohlc_only)
+mean_result = value(mean_only)
+volume_result = value(volume_sum)
+
+println(&quot;OHLC only: $(ohlc_result)&quot;)
+println(&quot;Mean only: $(mean_result)&quot;)
+println(&quot;Volume sum: $(volume_result)&quot;)</code></pre><h3 id="Multi-timeframe-Analysis"><a class="docs-heading-anchor" href="#Multi-timeframe-Analysis">Multi-timeframe Analysis</a><a id="Multi-timeframe-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-timeframe-Analysis" title="Permalink"></a></h3><p>Analyze the same data stream across multiple timeframes:</p><pre><code class="language-julia hljs"># Create resamplers for different timeframes
+timeframes = Dict(
+    &quot;1min&quot; =&gt; MarketResampler(Minute(1)),
+    &quot;5min&quot; =&gt; MarketResampler(Minute(5)),
+    &quot;15min&quot; =&gt; MarketResampler(Minute(15)),
+    &quot;1hour&quot; =&gt; MarketResampler(Hour(1))
+)
+
+# Generate sample data
+base_time = DateTime(2024, 1, 1, 9, 0, 0)
+sample_ticks = [
+    MarketDataPoint(base_time + Minute(i), 100.0 + randn(), rand(500:1500))
+    for i in 1:60  # 1 hour of minute-level data
+]
+
+# Process through all timeframes
+for tick in sample_ticks
+    for (name, resampler) in timeframes
+        fit!(resampler, tick)
+    end
+end
+
+# Display results
+println(&quot;Multi-timeframe Analysis:&quot;)
+for (name, resampler) in sort(collect(timeframes))
+    result = value(resampler)
+    if result.price.ohlc !== nothing
+        ohlc = result.price.ohlc
+        println(&quot;$name: O=$(round(ohlc.open, digits=2)), &quot; *
+                &quot;H=$(round(ohlc.high, digits=2)), &quot; *
+                &quot;L=$(round(ohlc.low, digits=2)), &quot; *
+                &quot;C=$(round(ohlc.close, digits=2)), &quot; *
+                &quot;Vol=$(round(result.volume))&quot;)
+    end
+end</code></pre><hr/><h2 id="Real-time-Data-Processing"><a class="docs-heading-anchor" href="#Real-time-Data-Processing">Real-time Data Processing</a><a id="Real-time-Data-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Real-time-Data-Processing" title="Permalink"></a></h2><h3 id="Stream-Processing-with-Window-Detection"><a class="docs-heading-anchor" href="#Stream-Processing-with-Window-Detection">Stream Processing with Window Detection</a><a id="Stream-Processing-with-Window-Detection-1"></a><a class="docs-heading-anchor-permalink" href="#Stream-Processing-with-Window-Detection" title="Permalink"></a></h3><p>For real-time applications, you often need to detect when windows complete:</p><pre><code class="language-julia hljs">mutable struct RealTimeProcessor
+    resampler::MarketResampler
+    completed_bars::Vector{NamedTuple}
+    current_window::Union{TimeWindow, Nothing}
+end
+
+function RealTimeProcessor(period::Period)
+    RealTimeProcessor(
+        MarketResampler(period),
+        NamedTuple[],
+        nothing
+    )
+end
+
+function process_tick!(processor::RealTimeProcessor, tick::MarketDataPoint)
+    # Get current state before processing
+    old_result = value(processor.resampler)
+    old_window = old_result.window
+
+    # Process the tick
+    fit!(processor.resampler, tick)
+
+    # Check for window completion
+    new_result = value(processor.resampler)
+    new_window = new_result.window
+
+    if old_window !== nothing &amp;&amp; new_window != old_window
+        # Window completed! Save the bar
+        if old_result.price.ohlc !== nothing
+            completed_bar = (
+                timestamp = old_window.start_time,
+                open = old_result.price.ohlc.open,
+                high = old_result.price.ohlc.high,
+                low = old_result.price.ohlc.low,
+                close = old_result.price.ohlc.close,
+                volume = old_result.volume
+            )
+            push!(processor.completed_bars, completed_bar)
+
+            # Callback for completed bar
+            on_bar_complete(completed_bar)
+        end
+    end
+
+    processor.current_window = new_window
+end
+
+function on_bar_complete(bar)
+    println(&quot;✅ Bar completed: $(bar.timestamp) - &quot; *
+            &quot;OHLC($(bar.open), $(bar.high), $(bar.low), $(bar.close)) &quot; *
+            &quot;Vol: $(bar.volume)&quot;)
+end
+
+# Usage example
+processor = RealTimeProcessor(Minute(1))
+
+# Simulate real-time tick stream
+stream_base = DateTime(2024, 1, 1, 14, 30, 0)
+for minute in 0:2, second in [0, 30]
+    timestamp = stream_base + Minute(minute) + Second(second)
+    tick = MarketDataPoint(timestamp, 100.0 + minute + randn()*0.1, rand(800:1200))
+    process_tick!(processor, tick)
+end</code></pre><h3 id="Parallel-Processing"><a class="docs-heading-anchor" href="#Parallel-Processing">Parallel Processing</a><a id="Parallel-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Parallel-Processing" title="Permalink"></a></h3><p>For high-throughput applications, process data in parallel and merge results:</p><pre><code class="language-julia hljs"># Function to process a chunk of data
+function process_chunk(data_chunk::Vector, period::Period)
+    chunk_resampler = OHLCResampler{DateTime, Float64, Float64}(period)
+    for data in data_chunk
+        fit!(chunk_resampler, data)
+    end
+    return chunk_resampler
+end
+
+# Generate large dataset
+large_dataset = [
+    MarketDataPoint(DateTime(2024, 1, 1, 9, 0, i), 100.0 + sin(i/100), rand(500:1500))
+    for i in 1:10000
+]
+
+# Split into chunks for parallel processing
+chunk_size = 2500
+chunks = [large_dataset[i:min(i+chunk_size-1, end)] for i in 1:chunk_size:length(large_dataset)]
+
+# Process chunks (in real applications, use @distributed or threading)
+chunk_resamplers = [process_chunk(chunk, Minute(1)) for chunk in chunks]
+
+# Merge all results
+final_resampler = chunk_resamplers[1]
+for i in 2:length(chunk_resamplers)
+    merge!(final_resampler, chunk_resamplers[i])
+end
+
+merged_result = value(final_resampler)
+println(&quot;Merged OHLC: $(merged_result.ohlc)&quot;)
+println(&quot;Total observations: $(nobs(final_resampler))&quot;)</code></pre><hr/><h2 id="Performance-Optimization"><a class="docs-heading-anchor" href="#Performance-Optimization">Performance Optimization</a><a id="Performance-Optimization-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Optimization" title="Permalink"></a></h2><h3 id="Memory-Efficiency"><a class="docs-heading-anchor" href="#Memory-Efficiency">Memory Efficiency</a><a id="Memory-Efficiency-1"></a><a class="docs-heading-anchor-permalink" href="#Memory-Efficiency" title="Permalink"></a></h3><p>OnlineResampler uses constant memory regardless of data volume:</p><pre><code class="language-julia hljs"># Memory usage stays constant even with millions of data points
+memory_test_resampler = MarketResampler(Minute(1))
+
+println(&quot;Processing 1 million data points...&quot;)
+for i in 1:1_000_000
+    timestamp = DateTime(2024, 1, 1, 9, 0, 0) + Millisecond(i)
+    data = MarketDataPoint(timestamp, 100.0 + sin(i/1000), 1000.0)
+    fit!(memory_test_resampler, data)
+
+    # Memory usage remains constant due to window transitions
+end
+
+result = value(memory_test_resampler)
+println(&quot;Current window has $(nobs(memory_test_resampler)) observations&quot;)
+println(&quot;Memory usage is O(1) - constant regardless of total data processed&quot;)</code></pre><h3 id="Type-Stability"><a class="docs-heading-anchor" href="#Type-Stability">Type Stability</a><a id="Type-Stability-1"></a><a class="docs-heading-anchor-permalink" href="#Type-Stability" title="Permalink"></a></h3><p>For maximum performance, use concrete types:</p><pre><code class="language-julia hljs"># Good: Concrete types
+fast_resampler = MarketResampler{DateTime, Float64, Float64}(Minute(1))
+
+# Less optimal: Abstract types (avoid if performance is critical)
+# slow_resampler = MarketResampler{Any, Any, Any}(Minute(1))
+
+# Concrete types enable compiler optimizations
+function high_performance_processing(resampler::MarketResampler{DateTime, Float64, Float64},
+                                   data_stream::Vector{MarketDataPoint{DateTime, Float64, Float64}})
+    for data in data_stream
+        fit!(resampler, data)
+    end
+    return value(resampler)
+end</code></pre><h3 id="Batch-Processing"><a class="docs-heading-anchor" href="#Batch-Processing">Batch Processing</a><a id="Batch-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Batch-Processing" title="Permalink"></a></h3><p>Process data in batches for optimal performance:</p><pre><code class="language-julia hljs">function batch_process_ticks(resampler, ticks::Vector)
+    # Process all ticks without intermediate value() calls
+    for tick in ticks
+        fit!(resampler, tick)
+    end
+
+    # Get result only once at the end
+    return value(resampler)
+end
+
+# This is faster than calling value() after each fit!()
+batch_resampler = MarketResampler(Minute(1))
+batch_ticks = [MarketDataPoint(now(), 100.0 + randn(), 1000.0) for _ in 1:1000]
+
+result = batch_process_ticks(batch_resampler, batch_ticks)</code></pre><hr/><h2 id="Best-Practices"><a class="docs-heading-anchor" href="#Best-Practices">Best Practices</a><a id="Best-Practices-1"></a><a class="docs-heading-anchor-permalink" href="#Best-Practices" title="Permalink"></a></h2><h3 id="1.-Choose-the-Right-Time-Period"><a class="docs-heading-anchor" href="#1.-Choose-the-Right-Time-Period">1. Choose the Right Time Period</a><a id="1.-Choose-the-Right-Time-Period-1"></a><a class="docs-heading-anchor-permalink" href="#1.-Choose-the-Right-Time-Period" title="Permalink"></a></h3><pre><code class="language-julia hljs"># High-frequency trading: sub-second intervals
+hft_resampler = MarketResampler(Millisecond(100))
+
+# Algorithmic trading: minute-level
+algo_resampler = MarketResampler(Minute(1))
+
+# Position management: hourly or daily
+position_resampler = MarketResampler(Hour(1))</code></pre><h3 id="2.-Handle-Time-Zone-Consistency"><a class="docs-heading-anchor" href="#2.-Handle-Time-Zone-Consistency">2. Handle Time Zone Consistency</a><a id="2.-Handle-Time-Zone-Consistency-1"></a><a class="docs-heading-anchor-permalink" href="#2.-Handle-Time-Zone-Consistency" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Always use consistent time zones
+using TimeZones
+
+# Convert all timestamps to UTC before processing
+function to_utc(local_time::DateTime, tz::TimeZone)
+    zoned_time = ZonedDateTime(local_time, tz)
+    return DateTime(astimezone(zoned_time, tz&quot;UTC&quot;))
+end
+
+# Process in UTC, display in local time as needed</code></pre><h3 id="3.-Validate-Input-Data"><a class="docs-heading-anchor" href="#3.-Validate-Input-Data">3. Validate Input Data</a><a id="3.-Validate-Input-Data-1"></a><a class="docs-heading-anchor-permalink" href="#3.-Validate-Input-Data" title="Permalink"></a></h3><pre><code class="language-julia hljs">function safe_process_tick(resampler, timestamp, price, volume)
+    # Validate inputs
+    if price &lt;= 0
+        @warn &quot;Invalid price: $price&quot;
+        return nothing
+    end
+
+    if volume &lt; 0
+        @warn &quot;Invalid volume: $volume&quot;
+        return nothing
+    end
+
+    # Create and process data
+    tick = MarketDataPoint(timestamp, price, volume)
+    fit!(resampler, tick)
+    return value(resampler)
+end</code></pre><h3 id="4.-Monitor-Window-Transitions"><a class="docs-heading-anchor" href="#4.-Monitor-Window-Transitions">4. Monitor Window Transitions</a><a id="4.-Monitor-Window-Transitions-1"></a><a class="docs-heading-anchor-permalink" href="#4.-Monitor-Window-Transitions" title="Permalink"></a></h3><pre><code class="language-julia hljs">function monitored_processing(resampler, tick)
+    old_window = value(resampler).window
+    fit!(resampler, tick)
+    new_window = value(resampler).window
+
+    if old_window !== nothing &amp;&amp; new_window != old_window
+        @info &quot;Window transition: $(old_window.start_time) -&gt; $(new_window.start_time)&quot;
+        # Handle window completion logic here
+    end
+end</code></pre><h3 id="5.-Error-Handling"><a class="docs-heading-anchor" href="#5.-Error-Handling">5. Error Handling</a><a id="5.-Error-Handling-1"></a><a class="docs-heading-anchor-permalink" href="#5.-Error-Handling" title="Permalink"></a></h3><pre><code class="language-julia hljs">function robust_resampling(ticks)
+    resampler = MarketResampler(Minute(1))
+    successful_ticks = 0
+    errors = 0
+
+    for tick in ticks
+        try
+            fit!(resampler, tick)
+            successful_ticks += 1
+        catch e
+            @warn &quot;Failed to process tick: $tick&quot; exception=(e, catch_backtrace())
+            errors += 1
+        end
+    end
+
+    @info &quot;Processing complete: $successful_ticks successful, $errors errors&quot;
+    return value(resampler)
+end</code></pre><hr/><h2 id="Conclusion"><a class="docs-heading-anchor" href="#Conclusion">Conclusion</a><a id="Conclusion-1"></a><a class="docs-heading-anchor-permalink" href="#Conclusion" title="Permalink"></a></h2><p>OnlineResampler.jl provides a powerful and flexible framework for real-time market data aggregation. Key takeaways:</p><ul><li><strong>Start Simple</strong>: Begin with <code>MarketResampler(Minute(1))</code> for basic OHLC resampling</li><li><strong>Choose Your Types</strong>: Use concrete types for performance, custom types for precision</li><li><strong>Handle Windows</strong>: Understand how time windows work and transition</li><li><strong>Scale Up</strong>: Use parallel processing and merging for high-throughput applications</li><li><strong>Monitor Performance</strong>: Leverage constant memory usage and type stability for optimal speed</li></ul><p>For more advanced usage patterns and examples, see the <code>examples/</code> directory and the API reference documentation.</p><hr/><h2 id="Next-Steps"><a class="docs-heading-anchor" href="#Next-Steps">Next Steps</a><a id="Next-Steps-1"></a><a class="docs-heading-anchor-permalink" href="#Next-Steps" title="Permalink"></a></h2><ul><li>Explore the <a href="../api_reference/">API Reference</a> for detailed function documentation</li><li>Check out <a href="../examples/advanced_examples.jl">Advanced Examples</a> for complex use cases</li><li>Read the source code for implementation details</li><li>Contribute improvements and new features!</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../user_guide/">User Guide »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Thursday 25 September 2025 12:11">Thursday 25 September 2025</span>. Using Julia version 1.11.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

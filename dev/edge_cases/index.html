@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Edge Cases &amp; Limitations · OnlineResampler.jl</title><meta name="title" content="Edge Cases &amp; Limitations · OnlineResampler.jl"/><meta property="og:title" content="Edge Cases &amp; Limitations · OnlineResampler.jl"/><meta property="twitter:title" content="Edge Cases &amp; Limitations · OnlineResampler.jl"/><meta name="description" content="Documentation for OnlineResampler.jl."/><meta property="og:description" content="Documentation for OnlineResampler.jl."/><meta property="twitter:description" content="Documentation for OnlineResampler.jl."/><meta property="og:url" content="https://femtotrader.github.io/OnlineResampler.jl/edge_cases/"/><meta property="twitter:url" content="https://femtotrader.github.io/OnlineResampler.jl/edge_cases/"/><link rel="canonical" href="https://femtotrader.github.io/OnlineResampler.jl/edge_cases/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../tutorial/">Tutorial</a></li><li><a class="tocitem" href="../user_guide/">User Guide</a></li><li><a class="tocitem" href="../api_reference/">API Reference</a></li><li class="is-active"><a class="tocitem" href>Edge Cases &amp; Limitations</a><ul class="internal"><li><a class="tocitem" href="#Table-of-Contents"><span>Table of Contents</span></a></li><li><a class="tocitem" href="#Out-of-Order-Data"><span>Out-of-Order Data</span></a></li><li><a class="tocitem" href="#Empty-Windows"><span>Empty Windows</span></a></li><li><a class="tocitem" href="#Single-Data-Points"><span>Single Data Points</span></a></li><li><a class="tocitem" href="#Type-Mismatches"><span>Type Mismatches</span></a></li><li><a class="tocitem" href="#Very-Large-Time-Gaps"><span>Very Large Time Gaps</span></a></li><li><a class="tocitem" href="#Precision-Issues"><span>Precision Issues</span></a></li><li><a class="tocitem" href="#Memory-Considerations"><span>Memory Considerations</span></a></li><li><a class="tocitem" href="#Best-Practices-for-Edge-Cases"><span>Best Practices for Edge Cases</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Edge Cases &amp; Limitations</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Edge Cases &amp; Limitations</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/femtotrader/OnlineResampler.jl" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Edge-Cases-and-Limitations"><a class="docs-heading-anchor" href="#Edge-Cases-and-Limitations">Edge Cases and Limitations</a><a id="Edge-Cases-and-Limitations-1"></a><a class="docs-heading-anchor-permalink" href="#Edge-Cases-and-Limitations" title="Permalink"></a></h1><p>This document covers important edge cases, limitations, and unexpected behaviors when using OnlineResampler.jl.</p><h2 id="Table-of-Contents"><a class="docs-heading-anchor" href="#Table-of-Contents">Table of Contents</a><a id="Table-of-Contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-Contents" title="Permalink"></a></h2><ol><li><a href="#out-of-order-data">Out-of-Order Data</a></li><li><a href="#empty-windows">Empty Windows</a></li><li><a href="#single-data-points">Single Data Points</a></li><li><a href="#type-mismatches">Type Mismatches</a></li><li><a href="#very-large-time-gaps">Very Large Time Gaps</a></li><li><a href="#precision-issues">Precision Issues</a></li><li><a href="#memory-considerations">Memory Considerations</a></li></ol><hr/><h2 id="Out-of-Order-Data"><a class="docs-heading-anchor" href="#Out-of-Order-Data">Out-of-Order Data</a><a id="Out-of-Order-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Out-of-Order-Data" title="Permalink"></a></h2><p><strong>⚠️ CRITICAL BEHAVIOR</strong>: OnlineResampler is designed for streaming data and assumes chronological order. Out-of-order data can cause unexpected behavior.</p><h3 id="The-Problem"><a class="docs-heading-anchor" href="#The-Problem">The Problem</a><a id="The-Problem-1"></a><a class="docs-heading-anchor-permalink" href="#The-Problem" title="Permalink"></a></h3><p>When data points arrive out of chronological order, OnlineResampler will:</p><ol><li><strong>Always move to the new data&#39;s time window</strong></li><li><strong>Finalize and lose all data from the previous window</strong></li><li><strong>Reset counters and aggregations for the new window</strong></li></ol><h3 id="Example-of-the-Issue"><a class="docs-heading-anchor" href="#Example-of-the-Issue">Example of the Issue</a><a id="Example-of-the-Issue-1"></a><a class="docs-heading-anchor-permalink" href="#Example-of-the-Issue" title="Permalink"></a></h3><pre><code class="language-julia hljs">using OnlineResampler, OnlineStatsBase, Dates
+
+resampler = MarketResampler(Minute(1))
+
+# Process some data in window 1 (9:30-9:31)
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 105.0, 800.0))
+
+# Move to window 2 (9:31-9:32)
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 31, 0), 102.0, 1200.0))
+
+result_before = value(resampler)
+println(&quot;Before: $(result_before.price.ohlc)&quot;)  # OHLC(102.0, 102.0, 102.0, 102.0)
+println(&quot;Window: $(result_before.window.start_time)&quot;)  # 2024-01-01T09:31:00
+
+# Now process OUT-OF-ORDER data from window 1
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 45), 95.0, 1500.0))
+
+result_after = value(resampler)
+println(&quot;After: $(result_after.price.ohlc)&quot;)   # OHLC(95.0, 95.0, 95.0, 95.0)
+println(&quot;Window: $(result_after.window.start_time)&quot;)   # 2024-01-01T09:30:00
+
+# 🚨 ALL DATA FROM THE 9:31 WINDOW IS LOST!
+# 🚨 The resampler moved back to the 9:30 window and reset everything!</code></pre><h3 id="Scenarios-and-Behaviors"><a class="docs-heading-anchor" href="#Scenarios-and-Behaviors">Scenarios and Behaviors</a><a id="Scenarios-and-Behaviors-1"></a><a class="docs-heading-anchor-permalink" href="#Scenarios-and-Behaviors" title="Permalink"></a></h3><h4 id="1.-Within-Same-Window-(Usually-OK)"><a class="docs-heading-anchor" href="#1.-Within-Same-Window-(Usually-OK)">1. Within Same Window (Usually OK)</a><a id="1.-Within-Same-Window-(Usually-OK)-1"></a><a class="docs-heading-anchor-permalink" href="#1.-Within-Same-Window-(Usually-OK)" title="Permalink"></a></h4><pre><code class="language-julia hljs">resampler = MarketResampler(Minute(1))
+
+# Data arrives out of order but within same 1-minute window
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))   # First
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 45), 105.0, 800.0))   # Last chronologically
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 15), 95.0, 1200.0))   # Middle chronologically
+
+result = value(resampler)
+# ✅ All data is preserved in OHLC
+# ❌ But Open=100.0 (first processed) and Close=95.0 (last processed)
+# ❌ Close is NOT the chronologically last price (105.0)!</code></pre><h4 id="2.-Across-Windows-(Always-Problematic)"><a class="docs-heading-anchor" href="#2.-Across-Windows-(Always-Problematic)">2. Across Windows (Always Problematic)</a><a id="2.-Across-Windows-(Always-Problematic)-1"></a><a class="docs-heading-anchor-permalink" href="#2.-Across-Windows-(Always-Problematic)" title="Permalink"></a></h4><pre><code class="language-julia hljs">resampler = MarketResampler(Minute(1))
+
+# Process data in sequence: 9:30 → 9:32 → 9:31 → 9:30
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))  # Window 1
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 32, 0), 110.0, 1500.0))  # Window 3
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 31, 0), 105.0, 800.0))   # Window 2
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 95.0, 1200.0))  # Back to Window 1
+
+# 🚨 Only the last window (9:30) has data
+# 🚨 All data from windows 9:32 and 9:31 is lost</code></pre><h3 id="Solutions"><a class="docs-heading-anchor" href="#Solutions">Solutions</a><a id="Solutions-1"></a><a class="docs-heading-anchor-permalink" href="#Solutions" title="Permalink"></a></h3><h4 id="Solution-1:-Pre-sort-Data"><a class="docs-heading-anchor" href="#Solution-1:-Pre-sort-Data">Solution 1: Pre-sort Data</a><a id="Solution-1:-Pre-sort-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Solution-1:-Pre-sort-Data" title="Permalink"></a></h4><pre><code class="language-julia hljs"># Always sort your data before processing
+unsorted_data = [
+    MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 45), 105.0, 800.0),
+    MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0),
+    MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 102.0, 1200.0),
+]
+
+# Sort by timestamp
+sorted_data = sort(unsorted_data, by=x -&gt; x.datetime)
+
+resampler = MarketResampler(Minute(1))
+for data in sorted_data
+    fit!(resampler, data)
+end
+
+result = value(resampler)
+# ✅ Correct OHLC with proper chronological order</code></pre><h4 id="Solution-2:-Batch-Processing-by-Windows"><a class="docs-heading-anchor" href="#Solution-2:-Batch-Processing-by-Windows">Solution 2: Batch Processing by Windows</a><a id="Solution-2:-Batch-Processing-by-Windows-1"></a><a class="docs-heading-anchor-permalink" href="#Solution-2:-Batch-Processing-by-Windows" title="Permalink"></a></h4><pre><code class="language-julia hljs">function batch_process_by_windows(data_points, period)
+    # Group data by time windows
+    windows = Dict{DateTime, Vector{MarketDataPoint}}()
+
+    for data in data_points
+        window_start = floor(data.datetime, period)
+        if !haskey(windows, window_start)
+            windows[window_start] = MarketDataPoint[]
+        end
+        push!(windows[window_start], data)
+    end
+
+    # Process each window with sorted data
+    results = []
+    for window_start in sort(collect(keys(windows)))
+        window_data = windows[window_start]
+        sorted_window_data = sort(window_data, by=x -&gt; x.datetime)
+
+        window_resampler = MarketResampler(period)
+        for data in sorted_window_data
+            fit!(window_resampler, data)
+        end
+
+        result = value(window_resampler)
+        if result.price.ohlc !== nothing
+            push!(results, (
+                window_start = window_start,
+                ohlc = result.price.ohlc,
+                volume = result.volume
+            ))
+        end
+    end
+
+    return results
+end
+
+# Usage
+mixed_data = [/* your out-of-order data */]
+results = batch_process_by_windows(mixed_data, Minute(1))</code></pre><h4 id="Solution-3:-Built-in-Chronological-Validation"><a class="docs-heading-anchor" href="#Solution-3:-Built-in-Chronological-Validation">Solution 3: Built-in Chronological Validation</a><a id="Solution-3:-Built-in-Chronological-Validation-1"></a><a class="docs-heading-anchor-permalink" href="#Solution-3:-Built-in-Chronological-Validation" title="Permalink"></a></h4><p>OnlineResampler.jl now includes built-in validation to detect and prevent out-of-order data:</p><pre><code class="language-julia hljs"># Enable chronological validation
+resampler = MarketResampler(Minute(1), validate_chronological=true)
+
+# Process data normally
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 105.0, 800.0))
+
+# This will throw an ArgumentError with detailed message
+try
+    fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 15), 95.0, 1200.0))
+catch e
+    println(&quot;Error: $(e.msg)&quot;)
+    # Error: Data not in chronological order: 2024-01-01T09:30:15 &lt; 2024-01-01T09:30:30.
+    # Received data point with timestamp 2024-01-01T09:30:15 but last processed timestamp was 2024-01-01T09:30:30.
+    # To disable this check, set validate_chronological=false in the constructor.
+end</code></pre><h4 id="Solution-4:-Manual-Validation"><a class="docs-heading-anchor" href="#Solution-4:-Manual-Validation">Solution 4: Manual Validation</a><a id="Solution-4:-Manual-Validation-1"></a><a class="docs-heading-anchor-permalink" href="#Solution-4:-Manual-Validation" title="Permalink"></a></h4><p>For cases where you want to validate before processing:</p><pre><code class="language-julia hljs">function validate_chronological_order(data_points)
+    for i in 2:length(data_points)
+        if data_points[i].datetime &lt; data_points[i-1].datetime
+            @warn &quot;Out-of-order data at index $i: $(data_points[i].datetime) &lt; $(data_points[i-1].datetime)&quot;
+            return false
+        end
+    end
+    return true
+end
+
+# Always validate before processing
+if !validate_chronological_order(your_data)
+    @error &quot;Data is not in chronological order. Consider sorting first.&quot;
+end</code></pre><hr/><h2 id="Empty-Windows"><a class="docs-heading-anchor" href="#Empty-Windows">Empty Windows</a><a id="Empty-Windows-1"></a><a class="docs-heading-anchor-permalink" href="#Empty-Windows" title="Permalink"></a></h2><p>OnlineResampler handles empty windows gracefully, but you need to be aware of the behavior.</p><h3 id="Behavior"><a class="docs-heading-anchor" href="#Behavior">Behavior</a><a id="Behavior-1"></a><a class="docs-heading-anchor-permalink" href="#Behavior" title="Permalink"></a></h3><pre><code class="language-julia hljs">resampler = MarketResampler(Minute(1))
+
+# No data processed yet
+result = value(resampler)
+println(result.price.ohlc)  # nothing
+println(result.volume)      # 0.0
+println(result.window)      # nothing</code></pre><h3 id="After-Processing-Data"><a class="docs-heading-anchor" href="#After-Processing-Data">After Processing Data</a><a id="After-Processing-Data-1"></a><a class="docs-heading-anchor-permalink" href="#After-Processing-Data" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Process one data point
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))
+
+result = value(resampler)
+println(result.price.ohlc)  # OHLC(100.0, 100.0, 100.0, 100.0)
+println(result.window)      # TimeWindow{DateTime}(DateTime(&quot;2024-01-01T09:30:00&quot;), Minute(1))</code></pre><hr/><h2 id="Single-Data-Points"><a class="docs-heading-anchor" href="#Single-Data-Points">Single Data Points</a><a id="Single-Data-Points-1"></a><a class="docs-heading-anchor-permalink" href="#Single-Data-Points" title="Permalink"></a></h2><p>When only one data point exists in a window:</p><pre><code class="language-julia hljs">resampler = MarketResampler(Minute(1))
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))
+
+result = value(resampler)
+ohlc = result.price.ohlc
+
+# All OHLC values are identical
+@assert ohlc.open == ohlc.high == ohlc.low == ohlc.close == 100.0</code></pre><p>This is correct behavior - with only one price point, all OHLC values should be the same.</p><hr/><h2 id="Type-Mismatches"><a class="docs-heading-anchor" href="#Type-Mismatches">Type Mismatches</a><a id="Type-Mismatches-1"></a><a class="docs-heading-anchor-permalink" href="#Type-Mismatches" title="Permalink"></a></h2><p>OnlineResampler is strictly typed. Type mismatches will cause compile-time or runtime errors:</p><pre><code class="language-julia hljs"># This will fail
+resampler = MarketResampler{DateTime, Float64, Float64}(Minute(1))
+bad_data = MarketDataPoint{DateTime, Int64, Float64}(DateTime(2024, 1, 1, 9, 30, 0), 100, 1000.0)
+
+# fit!(resampler, bad_data)  # MethodError: no method matching
+
+# Solution: Ensure consistent types
+good_data = MarketDataPoint{DateTime, Float64, Float64}(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0)
+fit!(resampler, good_data)  # Works</code></pre><h3 id="Type-Conversion-Helper"><a class="docs-heading-anchor" href="#Type-Conversion-Helper">Type Conversion Helper</a><a id="Type-Conversion-Helper-1"></a><a class="docs-heading-anchor-permalink" href="#Type-Conversion-Helper" title="Permalink"></a></h3><pre><code class="language-julia hljs">function convert_market_data(data::MarketDataPoint, ::Type{T}, ::Type{P}, ::Type{V}) where {T,P,V}
+    return MarketDataPoint{T,P,V}(
+        T(data.datetime),
+        P(data.price),
+        V(data.volume)
+    )
+end
+
+# Usage
+original = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100, 1000)  # Int types
+converted = convert_market_data(original, DateTime, Float64, Float64)</code></pre><hr/><h2 id="Very-Large-Time-Gaps"><a class="docs-heading-anchor" href="#Very-Large-Time-Gaps">Very Large Time Gaps</a><a id="Very-Large-Time-Gaps-1"></a><a class="docs-heading-anchor-permalink" href="#Very-Large-Time-Gaps" title="Permalink"></a></h2><p>OnlineResampler handles arbitrary time gaps, but be aware of implications:</p><pre><code class="language-julia hljs">resampler = MarketResampler(Minute(1))
+
+# Process data at 9:30
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0))
+
+# Process data much later (hours later)
+fit!(resampler, MarketDataPoint(DateTime(2024, 1, 1, 15, 30, 0), 200.0, 2000.0))
+
+# The resampler immediately moves to the 15:30 window
+# All intermediate windows (9:31, 9:32, ..., 15:29) are never created
+result = value(resampler)
+println(result.window.start_time)  # 2024-01-01T15:30:00</code></pre><p>This is expected behavior - OnlineResampler doesn&#39;t create empty intermediate windows.</p><hr/><h2 id="Precision-Issues"><a class="docs-heading-anchor" href="#Precision-Issues">Precision Issues</a><a id="Precision-Issues-1"></a><a class="docs-heading-anchor-permalink" href="#Precision-Issues" title="Permalink"></a></h2><h3 id="With-Floating-Point-Types"><a class="docs-heading-anchor" href="#With-Floating-Point-Types">With Floating Point Types</a><a id="With-Floating-Point-Types-1"></a><a class="docs-heading-anchor-permalink" href="#With-Floating-Point-Types" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Floating point precision can affect comparisons
+resampler = MarketResampler(Microsecond(1))
+
+dt1 = DateTime(2024, 1, 1, 9, 30, 0) + Nanosecond(100)  # Not exactly representable
+dt2 = DateTime(2024, 1, 1, 9, 30, 0) + Nanosecond(200)
+
+# These might end up in the same microsecond window due to precision</code></pre><h3 id="Solution:-Use-Appropriate-Precision"><a class="docs-heading-anchor" href="#Solution:-Use-Appropriate-Precision">Solution: Use Appropriate Precision</a><a id="Solution:-Use-Appropriate-Precision-1"></a><a class="docs-heading-anchor-permalink" href="#Solution:-Use-Appropriate-Precision" title="Permalink"></a></h3><pre><code class="language-julia hljs">using FixedPointDecimals
+
+# For high-precision financial data
+PreciseResampler = MarketResampler{DateTime, FixedDecimal{Int64,4}, FixedDecimal{Int64,2}}
+precise_resampler = PreciseResampler(Minute(1))
+
+precise_data = MarketDataPoint{DateTime, FixedDecimal{Int64,4}, FixedDecimal{Int64,2}}(
+    DateTime(2024, 1, 1, 9, 30, 0),
+    FixedDecimal{Int64,4}(100.1234),  # Exactly representable
+    FixedDecimal{Int64,2}(1000.50)    # Exactly representable
+)
+
+fit!(precise_resampler, precise_data)</code></pre><hr/><h2 id="Memory-Considerations"><a class="docs-heading-anchor" href="#Memory-Considerations">Memory Considerations</a><a id="Memory-Considerations-1"></a><a class="docs-heading-anchor-permalink" href="#Memory-Considerations" title="Permalink"></a></h2><h3 id="Normal-Operation-(Constant-Memory)"><a class="docs-heading-anchor" href="#Normal-Operation-(Constant-Memory)">Normal Operation (Constant Memory)</a><a id="Normal-Operation-(Constant-Memory)-1"></a><a class="docs-heading-anchor-permalink" href="#Normal-Operation-(Constant-Memory)" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Memory usage stays constant regardless of data volume
+resampler = MarketResampler(Minute(1))
+
+for i in 1:1_000_000
+    timestamp = DateTime(2024, 1, 1, 9, 0, 0) + Millisecond(i)
+    data = MarketDataPoint(timestamp, 100.0, 1000.0)
+    fit!(resampler, data)
+end
+
+# Memory usage is O(1) - constant</code></pre><h3 id="Potential-Memory-Issues"><a class="docs-heading-anchor" href="#Potential-Memory-Issues">Potential Memory Issues</a><a id="Potential-Memory-Issues-1"></a><a class="docs-heading-anchor-permalink" href="#Potential-Memory-Issues" title="Permalink"></a></h3><pre><code class="language-julia hljs"># DON&#39;T store all intermediate results
+results = []  # This will grow without bound!
+resampler = MarketResampler(Minute(1))
+
+for data in huge_dataset
+    fit!(resampler, data)
+    push!(results, value(resampler))  # ❌ This defeats the purpose!
+end</code></pre><p>Instead, only store completed windows:</p><pre><code class="language-julia hljs">completed_bars = []
+resampler = MarketResampler(Minute(1))
+current_window = nothing
+
+for data in huge_dataset
+    old_result = value(resampler)
+    old_window = old_result.window
+
+    fit!(resampler, data)
+
+    new_result = value(resampler)
+    if new_result.window != old_window &amp;&amp; old_window !== nothing
+        # Window completed, save it
+        push!(completed_bars, (
+            timestamp = old_window.start_time,
+            ohlc = old_result.price.ohlc,
+            volume = old_result.volume
+        ))
+    end
+end</code></pre><hr/><h2 id="Best-Practices-for-Edge-Cases"><a class="docs-heading-anchor" href="#Best-Practices-for-Edge-Cases">Best Practices for Edge Cases</a><a id="Best-Practices-for-Edge-Cases-1"></a><a class="docs-heading-anchor-permalink" href="#Best-Practices-for-Edge-Cases" title="Permalink"></a></h2><h3 id="1.-Always-Validate-Input-Data"><a class="docs-heading-anchor" href="#1.-Always-Validate-Input-Data">1. Always Validate Input Data</a><a id="1.-Always-Validate-Input-Data-1"></a><a class="docs-heading-anchor-permalink" href="#1.-Always-Validate-Input-Data" title="Permalink"></a></h3><pre><code class="language-julia hljs">function validate_market_data(data::MarketDataPoint)
+    if data.price &lt;= 0
+        throw(ArgumentError(&quot;Price must be positive: $(data.price)&quot;))
+    end
+    if data.volume &lt; 0
+        throw(ArgumentError(&quot;Volume cannot be negative: $(data.volume)&quot;))
+    end
+    return true
+end</code></pre><h3 id="2.-Sort-Before-Processing"><a class="docs-heading-anchor" href="#2.-Sort-Before-Processing">2. Sort Before Processing</a><a id="2.-Sort-Before-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#2.-Sort-Before-Processing" title="Permalink"></a></h3><pre><code class="language-julia hljs">function safe_resample(data_points, period; price_method=:ohlc)
+    # Always sort first
+    sorted_data = sort(data_points, by=x -&gt; x.datetime)
+
+    resampler = MarketResampler(period, price_method=price_method)
+    for data in sorted_data
+        validate_market_data(data)
+        fit!(resampler, data)
+    end
+
+    return value(resampler)
+end</code></pre><h3 id="3.-Handle-Empty-Results"><a class="docs-heading-anchor" href="#3.-Handle-Empty-Results">3. Handle Empty Results</a><a id="3.-Handle-Empty-Results-1"></a><a class="docs-heading-anchor-permalink" href="#3.-Handle-Empty-Results" title="Permalink"></a></h3><pre><code class="language-julia hljs">function safe_get_ohlc(resampler)
+    result = value(resampler)
+    if result.price.ohlc === nothing
+        @warn &quot;No OHLC data available - no data points processed yet&quot;
+        return nothing
+    end
+    return result.price.ohlc
+end</code></pre><h3 id="4.-Monitor-Window-Transitions"><a class="docs-heading-anchor" href="#4.-Monitor-Window-Transitions">4. Monitor Window Transitions</a><a id="4.-Monitor-Window-Transitions-1"></a><a class="docs-heading-anchor-permalink" href="#4.-Monitor-Window-Transitions" title="Permalink"></a></h3><pre><code class="language-julia hljs">function process_with_monitoring(resampler, data_stream)
+    window_count = 0
+    current_window = nothing
+
+    for data in data_stream
+        old_result = value(resampler)
+        old_window = old_result.window
+
+        fit!(resampler, data)
+
+        new_result = value(resampler)
+        if new_result.window != old_window
+            window_count += 1
+            @info &quot;Window transition #$window_count: $(old_window) → $(new_result.window)&quot;
+        end
+    end
+
+    return window_count
+end</code></pre><hr/><p>These edge cases and limitations are important to understand when using OnlineResampler.jl in production. The package is designed for streaming, chronologically-ordered data, and understanding these constraints will help you use it effectively.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../api_reference/">« API Reference</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Thursday 25 September 2025 12:11">Thursday 25 September 2025</span>. Using Julia version 1.11.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
