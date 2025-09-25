@@ -1,7 +1,7 @@
-using OnlineResampler, OnlineStatsBase, Dates
+using OnlineResamplers, OnlineStatsBase, Dates
 using Printf  # For formatted printing
 
-println("=== OnlineResampler Advanced Usage Examples ===\n")
+println("=== OnlineResamplers Advanced Usage Examples ===\n")
 
 # Example 1: Multi-timeframe analysis
 println("1. Multi-timeframe Analysis")

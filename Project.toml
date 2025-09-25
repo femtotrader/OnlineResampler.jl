@@ -1,4 +1,4 @@
-name = "OnlineResampler"
+name = "OnlineResamplers"
 uuid = "91f19164-bb01-4dba-8461-fcfa85cb2ff1"
 authors = ["scelles "]
 version = "0.1.0"

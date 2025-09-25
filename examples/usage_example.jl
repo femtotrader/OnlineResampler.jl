@@ -1,8 +1,8 @@
-using OnlineResampler
+using OnlineResamplers
 using OnlineStatsBase
 using Dates
 
-println("=== OnlineResampler Usage Examples ===\n")
+println("=== OnlineResamplers Usage Examples ===\n")
 
 # Example 1: Basic OHLC resampling with 1-minute windows
 println("1. OHLC Resampling (1-minute windows)")

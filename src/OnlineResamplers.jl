@@ -1,4 +1,4 @@
-module OnlineResampler
+module OnlineResamplers
 
 using OnlineStatsBase
 using Dates
@@ -13,7 +13,7 @@ export window_end, belongs_to_window, next_window
 
 A structure representing a single market data observation containing timestamp, price, and volume information.
 
-This is the fundamental data unit processed by all resampling algorithms in the OnlineResampler package.
+This is the fundamental data unit processed by all resampling algorithms in the OnlineResamplers package.
 The structure is parametrically typed to support various numeric and temporal types commonly used in
 financial applications.
 
@@ -29,7 +29,7 @@ financial applications.
 
 # Examples
 ```julia
-using OnlineResampler, Dates
+using OnlineResamplers, Dates
 
 # Basic construction with default types
 data = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.50, 1000.0)
@@ -207,7 +207,7 @@ belongs to a subsequent time period.
 
 # Examples
 ```julia
-using OnlineResampler, OnlineStatsBase, Dates
+using OnlineResamplers, OnlineStatsBase, Dates
 
 # Create a 1-minute OHLC resampler
 resampler = OHLCResampler(Minute(1))
@@ -314,7 +314,7 @@ statistics.
 
 # Examples
 ```julia
-using OnlineResampler, OnlineStatsBase, Dates
+using OnlineResamplers, OnlineStatsBase, Dates
 
 # Create OHLC resampler (default)
 ohlc_resampler = MarketResampler(Minute(1))
@@ -561,4 +561,4 @@ function OnlineStatsBase._merge!(resampler1::SumResampler{T,P,V}, resampler2::Su
     return resampler1
 end
 
-end # module OnlineResampler
+end # module OnlineResamplerss

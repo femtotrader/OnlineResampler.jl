@@ -1,6 +1,6 @@
-# OnlineResampler.jl Documentation
+# OnlineResamplers.jl Documentation
 
-Documentation build system for OnlineResampler.jl using Documenter.jl.
+Documentation build system for OnlineResamplers.jl using Documenter.jl.
 
 ## Quick Build
 
@@ -30,7 +30,7 @@ docs/
 
 This documentation has its own isolated environment:
 - **Documenter.jl** - HTML documentation generation
-- **OnlineResampler.jl** - Main package (as development dependency)
+- **OnlineResamplers.jl** - Main package (as development dependency)
 
 ## Other Commands
 

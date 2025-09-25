@@ -1,6 +1,6 @@
-# OnlineResampler.jl Documentation
+# OnlineResamplers.jl Documentation
 
-Welcome to the comprehensive documentation for OnlineResampler.jl - a high-performance Julia package for real-time resampling of financial market data.
+Welcome to the comprehensive documentation for OnlineResamplers.jl - a high-performance Julia package for real-time resampling of financial market data.
 
 ## Documentation Overview
 
@@ -108,10 +108,10 @@ Welcome to the comprehensive documentation for OnlineResampler.jl - a high-perfo
 
 ## Package Architecture
 
-OnlineResampler.jl is built on a clean, extensible architecture:
+OnlineResamplers.jl is built on a clean, extensible architecture:
 
 ```
-OnlineResampler.jl
+OnlineResamplers.jl
 ├── Core Types
 │   ├── MarketDataPoint{T,P,V}      # Input data structure
 │   ├── OHLC{P}                     # Price aggregation result
@@ -146,7 +146,7 @@ This design enables:
 
 ## Performance Characteristics
 
-OnlineResampler.jl is designed for high-performance applications:
+OnlineResamplers.jl is designed for high-performance applications:
 
 - **Memory**: O(1) constant memory usage regardless of data volume
 - **Speed**: ~50 nanoseconds per operation on modern hardware
@@ -170,10 +170,10 @@ See the source code and test files for implementation examples.
 
 ## Support and Community
 
-- **Issues**: Report bugs and request features on [GitHub Issues](https://github.com/femtotrader/OnlineResampler.jl/issues)
-- **Discussions**: Ask questions on [GitHub Discussions](https://github.com/femtotrader/OnlineResampler.jl/discussions)
+- **Issues**: Report bugs and request features on [GitHub Issues](https://github.com/femtotrader/OnlineResamplers.jl/issues)
+- **Discussions**: Ask questions on [GitHub Discussions](https://github.com/femtotrader/OnlineResamplers.jl/discussions)
 - **Documentation**: Contribute improvements to help others learn
 
 ---
 
-*This documentation covers OnlineResampler.jl v0.1.0 and later. For earlier versions, please refer to the appropriate git tags.*
+*This documentation covers OnlineResamplers.jl v0.1.0 and later. For earlier versions, please refer to the appropriate git tags.*

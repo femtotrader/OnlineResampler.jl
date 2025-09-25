@@ -1,6 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-OnlineResampler = "91f19164-bb01-4dba-8461-fcfa85cb2ff1"
+OnlineResamplers = "91f19164-bb01-4dba-8461-fcfa85cb2ff1"
 
 [compat]
 Documenter = "1"

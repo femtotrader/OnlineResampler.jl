@@ -15,12 +15,12 @@ println("📦 Installing documentation dependencies...")
 Pkg.instantiate()
 
 # Develop the main package so it's available
-println("📚 Adding OnlineResampler package...")
+println("📚 Adding OnlineResamplers package...")
 Pkg.develop(PackageSpec(path=joinpath(@__DIR__, "..")))
 
 # Load the packages
-println("📚 Loading OnlineResampler...")
-using OnlineResampler
+println("📚 Loading OnlineResamplers...")
+using OnlineResamplers
 
 println("📚 Loading Documenter...")
 using Documenter

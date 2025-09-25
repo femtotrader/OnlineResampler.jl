@@ -1,6 +1,6 @@
-# OnlineResampler.jl Tutorial
+# OnlineResamplers.jl Tutorial
 
-This tutorial will guide you through the main features of OnlineResampler.jl, from basic usage to advanced applications.
+This tutorial will guide you through the main features of OnlineResamplers.jl, from basic usage to advanced applications.
 
 ## Table of Contents
 
@@ -21,13 +21,13 @@ This tutorial will guide you through the main features of OnlineResampler.jl, fr
 
 ```julia
 using Pkg
-Pkg.add(url="https://github.com/femtotrader/OnlineResampler.jl")
+Pkg.add(url="https://github.com/femtotrader/OnlineResamplers.jl")
 ```
 
 ### Basic Setup
 
 ```julia
-using OnlineResampler, OnlineStatsBase, Dates
+using OnlineResamplers, OnlineStatsBase, Dates
 ```
 
 ### Your First Resampler
@@ -116,7 +116,7 @@ println("Volume: $(result.volume)")   # 3900.0
 
 ## Chronological Data Validation
 
-OnlineResampler is designed for streaming data and assumes chronological order. You can enable validation to detect and prevent out-of-order data:
+OnlineResamplers is designed for streaming data and assumes chronological order. You can enable validation to detect and prevent out-of-order data:
 
 ### Default Behavior (No Validation)
 ```julia
@@ -157,7 +157,7 @@ end
 
 ## Understanding Time Windows
 
-Time windows are fundamental to how OnlineResampler groups data:
+Time windows are fundamental to how OnlineResamplers groups data:
 
 ### How Time Windows Work
 
@@ -229,7 +229,7 @@ println("Window: $(result2.window.start_time)")
 
 ### High-Precision Financial Data
 
-OnlineResampler supports custom numeric types for high-precision calculations:
+OnlineResamplers supports custom numeric types for high-precision calculations:
 
 ```julia
 # Using Rational numbers for exact arithmetic
@@ -465,7 +465,7 @@ println("Total observations: $(nobs(final_resampler))")
 
 ### Memory Efficiency
 
-OnlineResampler uses constant memory regardless of data volume:
+OnlineResamplers uses constant memory regardless of data volume:
 
 ```julia
 # Memory usage stays constant even with millions of data points
@@ -624,7 +624,7 @@ end
 
 ## Conclusion
 
-OnlineResampler.jl provides a powerful and flexible framework for real-time market data aggregation. Key takeaways:
+OnlineResamplers.jl provides a powerful and flexible framework for real-time market data aggregation. Key takeaways:
 
 - **Start Simple**: Begin with `MarketResampler(Minute(1))` for basic OHLC resampling
 - **Choose Your Types**: Use concrete types for performance, custom types for precision

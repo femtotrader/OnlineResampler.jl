@@ -1,6 +1,6 @@
 # Edge Cases and Limitations
 
-This document covers important edge cases, limitations, and unexpected behaviors when using OnlineResampler.jl.
+This document covers important edge cases, limitations, and unexpected behaviors when using OnlineResamplers.jl.
 
 ## Table of Contents
 
@@ -16,11 +16,11 @@ This document covers important edge cases, limitations, and unexpected behaviors
 
 ## Out-of-Order Data
 
-**⚠️ CRITICAL BEHAVIOR**: OnlineResampler is designed for streaming data and assumes chronological order. Out-of-order data can cause unexpected behavior.
+**⚠️ CRITICAL BEHAVIOR**: OnlineResamplers is designed for streaming data and assumes chronological order. Out-of-order data can cause unexpected behavior.
 
 ### The Problem
 
-When data points arrive out of chronological order, OnlineResampler will:
+When data points arrive out of chronological order, OnlineResamplers will:
 
 1. **Always move to the new data's time window**
 2. **Finalize and lose all data from the previous window**
@@ -29,7 +29,7 @@ When data points arrive out of chronological order, OnlineResampler will:
 ### Example of the Issue
 
 ```julia
-using OnlineResampler, OnlineStatsBase, Dates
+using OnlineResamplers, OnlineStatsBase, Dates
 
 resampler = MarketResampler(Minute(1))
 
@@ -158,7 +158,7 @@ results = batch_process_by_windows(mixed_data, Minute(1))
 
 #### Solution 3: Built-in Chronological Validation
 
-OnlineResampler.jl now includes built-in validation to detect and prevent out-of-order data:
+OnlineResamplers.jl now includes built-in validation to detect and prevent out-of-order data:
 
 ```julia
 # Enable chronological validation
@@ -204,7 +204,7 @@ end
 
 ## Empty Windows
 
-OnlineResampler handles empty windows gracefully, but you need to be aware of the behavior.
+OnlineResamplers handles empty windows gracefully, but you need to be aware of the behavior.
 
 ### Behavior
 
@@ -252,7 +252,7 @@ This is correct behavior - with only one price point, all OHLC values should be 
 
 ## Type Mismatches
 
-OnlineResampler is strictly typed. Type mismatches will cause compile-time or runtime errors:
+OnlineResamplers is strictly typed. Type mismatches will cause compile-time or runtime errors:
 
 ```julia
 # This will fail
@@ -286,7 +286,7 @@ converted = convert_market_data(original, DateTime, Float64, Float64)
 
 ## Very Large Time Gaps
 
-OnlineResampler handles arbitrary time gaps, but be aware of implications:
+OnlineResamplers handles arbitrary time gaps, but be aware of implications:
 
 ```julia
 resampler = MarketResampler(Minute(1))
@@ -303,7 +303,7 @@ result = value(resampler)
 println(result.window.start_time)  # 2024-01-01T15:30:00
 ```
 
-This is expected behavior - OnlineResampler doesn't create empty intermediate windows.
+This is expected behavior - OnlineResamplers doesn't create empty intermediate windows.
 
 ---
 
@@ -470,4 +470,4 @@ end
 
 ---
 
-These edge cases and limitations are important to understand when using OnlineResampler.jl in production. The package is designed for streaming, chronologically-ordered data, and understanding these constraints will help you use it effectively.
+These edge cases and limitations are important to understand when using OnlineResamplers.jl in production. The package is designed for streaming, chronologically-ordered data, and understanding these constraints will help you use it effectively.

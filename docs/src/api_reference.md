@@ -1,6 +1,6 @@
 # API Reference
 
-This document provides detailed API reference for OnlineResampler.jl.
+This document provides detailed API reference for OnlineResamplers.jl.
 
 ## Table of Contents
 

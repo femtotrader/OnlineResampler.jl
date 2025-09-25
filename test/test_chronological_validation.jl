@@ -1,4 +1,4 @@
-using OnlineResampler
+using OnlineResamplers
 using OnlineStatsBase
 using Dates
 using Test

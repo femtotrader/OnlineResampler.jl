@@ -1,9 +1,9 @@
-using OnlineResampler
+using OnlineResamplers
 using OnlineStatsBase
 using Dates
 using Test
 
-@testset "OnlineResampler Tests" begin
+@testset "OnlineResamplers Tests" begin
 
     @testset "MarketDataPoint" begin
         # Test basic construction

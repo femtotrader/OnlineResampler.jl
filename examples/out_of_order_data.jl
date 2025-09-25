@@ -1,9 +1,9 @@
-using OnlineResampler, OnlineStatsBase, Dates
+using OnlineResamplers, OnlineStatsBase, Dates
 using Printf
 
-println("=== OnlineResampler: Out-of-Order Data Behavior ===\n")
+println("=== OnlineResamplers: Out-of-Order Data Behavior ===\n")
 
-# The key insight: OnlineResampler is designed for streaming data and uses a "current window" approach
+# The key insight: OnlineResamplers is designed for streaming data and uses a "current window" approach
 # When data doesn't belong to the current window, it ALWAYS moves to the new data's window
 # This means out-of-order data can cause issues with data integrity
 
@@ -322,13 +322,13 @@ is_ordered = validate_chronological_order(mixed_data)
 println("   Data is chronologically ordered: $(is_ordered)")
 
 if !is_ordered
-    println("   ⚠️  Consider sorting data before processing with OnlineResampler")
+    println("   ⚠️  Consider sorting data before processing with OnlineResamplers")
 end
 
 println("\n" * "="^60)
 println("SUMMARY")
 println("="^60)
-println("OnlineResampler is designed for STREAMING data and assumes:")
+println("OnlineResamplers is designed for STREAMING data and assumes:")
 println("• Data arrives in chronological order")
 println("• You want constant memory usage")
 println("• You prioritize speed over handling out-of-order data")

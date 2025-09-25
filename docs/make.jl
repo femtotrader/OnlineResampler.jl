@@ -1,12 +1,12 @@
 using Documenter
-using OnlineResampler
+using OnlineResamplers
 
 makedocs(;
-    modules = [OnlineResampler],
-    sitename = "OnlineResampler.jl",
+    modules = [OnlineResamplers],
+    sitename = "OnlineResamplers.jl",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
-        canonical = "https://femtotrader.github.io/OnlineResampler.jl",
+        canonical = "https://femtotrader.github.io/OnlineResamplers.jl",
         assets = String[],
         sidebar_sitename = false
     ),
@@ -19,12 +19,12 @@ makedocs(;
     ],
     checkdocs = :none,  # Disable docstring checking for now
     doctest = false,
-    repo = "https://github.com/femtotrader/OnlineResampler.jl",
+    repo = "https://github.com/femtotrader/OnlineResamplers.jl",
     warnonly = [:missing_docs, :cross_references]  # Don't fail on these warnings
 )
 
 # Deploy documentation to GitHub Pages
 deploydocs(;
-    repo = "github.com/femtotrader/OnlineResampler.jl",
+    repo = "github.com/femtotrader/OnlineResamplers.jl",
     devbranch = "main"
 )

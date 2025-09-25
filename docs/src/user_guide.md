@@ -1,6 +1,6 @@
 # User Guide
 
-This comprehensive guide covers all aspects of using OnlineResampler.jl for financial market data processing.
+This comprehensive guide covers all aspects of using OnlineResamplers.jl for financial market data processing.
 
 ## Table of Contents
 
@@ -19,15 +19,15 @@ This comprehensive guide covers all aspects of using OnlineResampler.jl for fina
 
 ```julia
 using Pkg
-Pkg.add(url="https://github.com/femtotrader/OnlineResampler.jl")
+Pkg.add(url="https://github.com/femtotrader/OnlineResamplers.jl")
 ```
 
 ### Development Installation
 
 ```julia
 using Pkg
-Pkg.develop(url="https://github.com/femtotrader/OnlineResampler.jl")
-Pkg.test("OnlineResampler")
+Pkg.develop(url="https://github.com/femtotrader/OnlineResamplers.jl")
+Pkg.test("OnlineResamplers")
 ```
 
 ---
@@ -39,7 +39,7 @@ Pkg.test("OnlineResampler")
 Market data is represented using the `MarketDataPoint{T,P,V}` structure, which provides type safety and flexibility:
 
 ```julia
-using OnlineResampler, Dates
+using OnlineResamplers, Dates
 
 # Basic usage with default types (DateTime, Float64, Float64)
 data = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.50, 1000.0)
@@ -97,7 +97,7 @@ end
 OHLC (Open, High, Low, Close) resampling is perfect for candlestick charts and technical analysis:
 
 ```julia
-using OnlineResampler, OnlineStatsBase, Dates
+using OnlineResamplers, OnlineStatsBase, Dates
 
 # Create OHLC resampler (this is the default)
 ohlc_resampler = MarketResampler(Minute(1), price_method=:ohlc)
@@ -153,7 +153,7 @@ println("Volume: $(result.volume)")   # 3900.0
 
 ### Custom Numeric Types
 
-OnlineResampler fully supports custom numeric types commonly used in financial applications:
+OnlineResamplers fully supports custom numeric types commonly used in financial applications:
 
 ```julia
 using FixedPointDecimals, NanoDates
@@ -184,7 +184,7 @@ println("High-precision Volume: $(result.volume)")
 
 ### Parallel Processing
 
-OnlineResampler supports efficient merging for parallel data processing:
+OnlineResamplers supports efficient merging for parallel data processing:
 
 ```julia
 # Function to process a chunk of data
@@ -260,7 +260,7 @@ println("Volume sum: $(volume_result)")
 Here's a complete example processing market data from a CSV file:
 
 ```julia
-using OnlineResampler, OnlineStatsBase, Dates, CSV, DataFrames
+using OnlineResamplers, OnlineStatsBase, Dates, CSV, DataFrames
 
 # Load tick data from CSV file
 tick_data = CSV.read("market_ticks.csv", DataFrame)
@@ -364,7 +364,7 @@ end
 
 ### Memory Efficiency
 
-OnlineResampler uses constant memory regardless of data volume:
+OnlineResamplers uses constant memory regardless of data volume:
 
 ```julia
 # Memory usage stays constant even with millions of data points
@@ -470,7 +470,7 @@ Expected performance characteristics:
 
 ## Integration with OnlineStats
 
-OnlineResampler seamlessly integrates with the broader OnlineStats ecosystem:
+OnlineResamplers seamlessly integrates with the broader OnlineStats ecosystem:
 
 ```julia
 using OnlineStats
@@ -676,4 +676,4 @@ end
 
 ---
 
-This user guide covers the essential aspects of using OnlineResampler.jl effectively. For more detailed API information, see the [API Reference](api_reference.md), and for step-by-step learning, check out the [Tutorial](tutorial.md).
+This user guide covers the essential aspects of using OnlineResamplers.jl effectively. For more detailed API information, see the [API Reference](api_reference.md), and for step-by-step learning, check out the [Tutorial](tutorial.md).
