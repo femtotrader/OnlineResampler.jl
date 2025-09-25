@@ -19,6 +19,12 @@ makedocs(;
     ],
     checkdocs = :none,  # Disable docstring checking for now
     doctest = false,
-    remotes = nothing,  # Disable remote repository links
+    repo = "https://github.com/femtotrader/OnlineResampler.jl",
     warnonly = [:missing_docs, :cross_references]  # Don't fail on these warnings
+)
+
+# Deploy documentation to GitHub Pages
+deploydocs(;
+    repo = "github.com/femtotrader/OnlineResampler.jl",
+    devbranch = "main"
 )

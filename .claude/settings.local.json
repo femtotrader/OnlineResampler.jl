@@ -3,7 +3,8 @@
     "allow": [
       "Bash(julia:*)",
       "Bash(make:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
