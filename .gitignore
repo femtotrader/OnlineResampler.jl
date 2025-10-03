@@ -37,3 +37,4 @@ JuliaLocalPreferences.toml
 
 # Claude Code settings
 .claude/
+build/
