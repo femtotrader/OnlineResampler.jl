@@ -15,7 +15,8 @@ makedocs(;
         "Tutorial" => "tutorial.md",
         "User Guide" => "user_guide.md",
         "API Reference" => "api_reference.md",
-        "Edge Cases & Limitations" => "edge_cases.md"
+        "Edge Cases & Limitations" => "edge_cases.md",
+        "⚠️ AI Transparency" => "ai_transparency.md"
     ],
     checkdocs = :none,  # Disable docstring checking for now
     doctest = false,

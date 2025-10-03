@@ -16,12 +16,38 @@ help:
 # Build documentation
 docs:
 	@echo "🔨 Building documentation..."
-	julia docs/build.jl
+	@julia --project=docs -e '\
+		using Documenter, OnlineResamplers; \
+		makedocs(; \
+			modules = [OnlineResamplers], \
+			sitename = "OnlineResamplers.jl", \
+			format = Documenter.HTML(; \
+				prettyurls = false, \
+				canonical = "https://femtotrader.github.io/OnlineResamplers.jl", \
+				assets = String[], \
+				sidebar_sitename = false \
+			), \
+			pages = [ \
+				"Home" => "index.md", \
+				"Tutorial" => "tutorial.md", \
+				"User Guide" => "user_guide.md", \
+				"API Reference" => "api_reference.md", \
+				"Edge Cases & Limitations" => "edge_cases.md", \
+				"⚠️ AI Transparency" => "ai_transparency.md" \
+			], \
+			source = "docs/src", \
+			build = "build", \
+			checkdocs = :none, \
+			doctest = false, \
+			warnonly = [:missing_docs, :cross_references] \
+		)'
+	@echo "✅ Documentation built successfully!"
+	@echo "📂 Documentation files are in: build/"
 
 # Build and open documentation
 docs-open: docs
 	@echo "📖 Opening documentation..."
-	julia docs/open.jl
+	@open build/index.html
 
 # Run tests
 test:
@@ -31,5 +57,5 @@ test:
 # Clean built documentation
 clean:
 	@echo "🧹 Cleaning documentation build directory..."
-	rm -rf docs/build/
+	rm -rf build/
 	@echo "✅ Documentation build directory cleaned"

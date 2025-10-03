@@ -4,6 +4,12 @@
 [![Coverage](https://codecov.io/gh/femtotrader/OnlineResamplers.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/femtotrader/OnlineResamplers.jl)
 [![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://femtotrader.github.io/OnlineResamplers.jl)
 
+> **⚠️ AI-Generated Code Notice**
+>
+> Significant portions of this package were developed with AI assistance (Claude 3.5 Sonnet). While extensively tested (>90% coverage, 94 BDD scenarios), users should exercise appropriate due diligence for production use.
+>
+> **📋 [Read Full AI Transparency Notice →](AI_NOTICE.md)** | **📖 [Detailed Documentation →](https://femtotrader.github.io/OnlineResamplers.jl/dev/ai_transparency/)**
+
 A high-performance Julia package for real-time resampling of financial market data. Built on [OnlineStatsBase.jl](https://github.com/joshday/OnlineStatsBase.jl), it provides efficient streaming algorithms for aggregating tick-level market data into OHLC candlesticks and other time-based formats.
 
 ## Quick Start

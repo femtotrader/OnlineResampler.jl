@@ -2,6 +2,13 @@
 
 Welcome to the comprehensive documentation for OnlineResamplers.jl - a high-performance Julia package for real-time resampling of financial market data.
 
+!!! warning "AI-Generated Code Notice"
+    **Significant portions of this package were developed with AI assistance (Claude 3.5 Sonnet).**
+
+    While extensively tested (>90% coverage, 94 BDD scenarios), users should exercise appropriate due diligence for production use.
+
+    **📋 [Read Full AI Transparency Documentation →](ai_transparency.md)** | **📄 [Quick Reference (AI_NOTICE.md) →](https://github.com/femtotrader/OnlineResamplers.jl/blob/main/AI_NOTICE.md)**
+
 ## Documentation Overview
 
 ### 📚 Getting Started
