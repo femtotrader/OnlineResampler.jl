@@ -4,9 +4,11 @@ using OnlineStatsBase
 using Dates
 
 export MarketResampler, OHLCResampler, MeanResampler, SumResampler
+export AbstractResampler
 export fit!, value, merge!
-export MarketDataPoint, OHLC, TimeWindow
-export window_end, belongs_to_window, next_window
+export MarketDataPoint, OHLC
+export AbstractWindow, TimeWindow, VolumeWindow, TickWindow
+export window_end, belongs_to_window, next_window, should_finalize
 
 """
     MarketDataPoint{T,P,V}
@@ -63,7 +65,25 @@ MarketDataPoint(datetime::DateTime, price::Real, volume::Real) =
     MarketDataPoint{DateTime, Float64, Float64}(datetime, Float64(price), Float64(volume))
 
 """
-    abstract type AbstractResampler{T,P,V} <: OnlineStat{MarketDataPoint{T,P,V}} end
+    abstract type AbstractWindow end
+
+Abstract base type for all window types used in resampling.
+
+A window defines when data should be aggregated together and when a new window should begin.
+Different window types enable different resampling criteria: time-based, volume-based, tick-based, etc.
+
+# Interface
+All subtypes must implement:
+- `should_finalize(data::MarketDataPoint, window::AbstractWindow)::Bool` - Returns true if the data point belongs to a new window
+- `next_window(window::AbstractWindow, data::MarketDataPoint)` - Creates the next window starting from the given data point
+- `belongs_to_window(data::MarketDataPoint, window::AbstractWindow)::Bool` - Returns true if data belongs to current window
+
+See also: [`TimeWindow`](@ref), [`VolumeWindow`](@ref), [`TickWindow`](@ref)
+"""
+abstract type AbstractWindow end
+
+"""
+    abstract type AbstractResampler{T,P,V,W<:AbstractWindow} <: OnlineStat{MarketDataPoint{T,P,V}} end
 
 Abstract base type for all market data resampling algorithms.
 
@@ -75,6 +95,7 @@ All concrete resampler types (`OHLCResampler`, `MeanResampler`, `SumResampler`) 
 - `T`: Timestamp type (e.g., `DateTime`, `NanoDate`)
 - `P`: Price type (e.g., `Float64`, `FixedDecimal`)
 - `V`: Volume type (e.g., `Float64`, `FixedDecimal`)
+- `W`: Window type (e.g., `TimeWindow`, `VolumeWindow`)
 
 # Interface
 All subtypes must implement:
@@ -84,7 +105,7 @@ All subtypes must implement:
 
 See also: [`OHLCResampler`](@ref), [`MeanResampler`](@ref), [`SumResampler`](@ref)
 """
-abstract type AbstractResampler{T,P,V} <: OnlineStat{MarketDataPoint{T,P,V}} end
+abstract type AbstractResampler{T,P,V,W<:AbstractWindow} <: OnlineStat{MarketDataPoint{T,P,V}} end
 
 """
     OHLC{P}
@@ -128,13 +149,13 @@ end
 Base.show(io::IO, ohlc::OHLC) = print(io, "OHLC($(ohlc.open), $(ohlc.high), $(ohlc.low), $(ohlc.close))")
 
 """
-    TimeWindow{T}
+    TimeWindow{T} <: AbstractWindow
 
-Represents a time interval used for grouping market data during resampling operations.
+Represents a time-based window for grouping market data during resampling operations.
 
 A `TimeWindow` defines a specific time interval with a start time and duration (period).
-Market data points that fall within this window are aggregated together. This structure
-is fundamental to the resampling process, determining how data is grouped temporally.
+Market data points that fall within this window are aggregated together. This is the
+traditional time-based resampling approach (e.g., 1-minute bars, 5-minute bars).
 
 # Type Parameters
 - `T`: Timestamp type (e.g., `DateTime`, `NanoDate`)
@@ -151,19 +172,19 @@ using Dates
 window = TimeWindow{DateTime}(DateTime(2024, 1, 1, 9, 30, 0), Minute(1))
 
 # Check if a timestamp belongs to this window
-timestamp = DateTime(2024, 1, 1, 9, 30, 30)
-belongs = belongs_to_window(timestamp, window)  # true
+data = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 100.0, 1000.0)
+belongs = belongs_to_window(data, window)  # true
 
 # Get the end time of the window
 end_time = window_end(window)  # 2024-01-01T09:31:00
 
 # Move to the next window
-next_win = next_window(window)  # starts at 2024-01-01T09:31:00
+next_win = next_window(window, data)  # starts at 2024-01-01T09:31:00
 ```
 
-See also: [`window_end`](@ref), [`belongs_to_window`](@ref), [`next_window`](@ref)
+See also: [`VolumeWindow`](@ref), [`TickWindow`](@ref), [`AbstractWindow`](@ref)
 """
-struct TimeWindow{T}
+struct TimeWindow{T} <: AbstractWindow
     start_time::T
     period::Period
 end
@@ -172,6 +193,20 @@ function window_end(window::TimeWindow{T}) where T
     return window.start_time + window.period
 end
 
+function belongs_to_window(data::MarketDataPoint{T}, window::TimeWindow{T}) where T
+    return window.start_time <= data.datetime < window_end(window)
+end
+
+function should_finalize(data::MarketDataPoint{T}, window::TimeWindow{T}) where T
+    return !belongs_to_window(data, window)
+end
+
+function next_window(window::TimeWindow{T}, data::MarketDataPoint{T}) where T
+    window_start = floor(data.datetime, window.period)
+    return TimeWindow{T}(window_start, window.period)
+end
+
+# Backward compatibility: old API for TimeWindow
 function belongs_to_window(datetime::T, window::TimeWindow{T}) where T
     return window.start_time <= datetime < window_end(window)
 end
@@ -181,26 +216,121 @@ function next_window(window::TimeWindow{T}) where T
 end
 
 """
-    OHLCResampler{T,P,V} <: AbstractResampler{T,P,V}
+    VolumeWindow{V} <: AbstractWindow
 
-A resampler that aggregates market data into OHLC (Open, High, Low, Close) format over fixed time periods.
+Represents a volume-based window for grouping market data during resampling operations.
+
+A `VolumeWindow` aggregates data until the cumulative volume reaches a target threshold,
+then starts a new window. This is useful for volume-based bars, where each bar represents
+a fixed amount of traded volume rather than a fixed time period.
+
+# Type Parameters
+- `V`: Volume type (e.g., `Float64`, `FixedDecimal`, `Int64`)
+
+# Fields
+- `target_volume::V`: The cumulative volume threshold that triggers a new window
+- `current_volume::V`: The accumulated volume in the current window
+
+# Examples
+```julia
+# Create a window that resets every 1000 units of volume
+window = VolumeWindow{Float64}(1000.0, 0.0)
+
+# Process data - window will finalize when cumulative volume >= 1000
+data1 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 600.0)
+data2 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 5), 101.0, 500.0)  # Total 1100, triggers new window
+
+# Create a resampler with volume-based windows
+resampler = OHLCResampler(VolumeWindow{Float64}(1000.0))
+```
+
+See also: [`TimeWindow`](@ref), [`TickWindow`](@ref), [`AbstractWindow`](@ref)
+"""
+mutable struct VolumeWindow{V} <: AbstractWindow
+    target_volume::V
+    current_volume::V
+end
+
+# Convenience constructor
+VolumeWindow(target_volume::V) where V = VolumeWindow{V}(target_volume, zero(V))
+
+function belongs_to_window(data::MarketDataPoint{T,P,V}, window::VolumeWindow{V}) where {T,P,V}
+    return window.current_volume + data.volume < window.target_volume
+end
+
+function should_finalize(data::MarketDataPoint{T,P,V}, window::VolumeWindow{V}) where {T,P,V}
+    return window.current_volume + data.volume >= window.target_volume
+end
+
+function next_window(window::VolumeWindow{V}, data::MarketDataPoint) where V
+    return VolumeWindow{V}(window.target_volume, zero(V))
+end
+
+"""
+    TickWindow <: AbstractWindow
+
+Represents a tick-based window for grouping market data during resampling operations.
+
+A `TickWindow` aggregates data for a fixed number of ticks (data points), regardless of
+time or volume. Each window contains exactly `target_ticks` number of observations.
+
+# Fields
+- `target_ticks::Int`: The number of ticks that triggers a new window
+- `current_ticks::Int`: The number of ticks processed in the current window
+
+# Examples
+```julia
+# Create a window that resets every 100 ticks
+window = TickWindow(100, 0)
+
+# Each window will contain exactly 100 data points
+resampler = OHLCResampler(TickWindow(100))
+```
+
+See also: [`TimeWindow`](@ref), [`VolumeWindow`](@ref), [`AbstractWindow`](@ref)
+"""
+mutable struct TickWindow <: AbstractWindow
+    target_ticks::Int
+    current_ticks::Int
+end
+
+# Convenience constructor
+TickWindow(target_ticks::Int) = TickWindow(target_ticks, 0)
+
+function belongs_to_window(data::MarketDataPoint, window::TickWindow)
+    return window.current_ticks < window.target_ticks
+end
+
+function should_finalize(data::MarketDataPoint, window::TickWindow)
+    return window.current_ticks >= window.target_ticks
+end
+
+function next_window(window::TickWindow, data::MarketDataPoint)
+    return TickWindow(window.target_ticks, 0)
+end
+
+"""
+    OHLCResampler{T,P,V,W} <: AbstractResampler{T,P,V,W}
+
+A resampler that aggregates market data into OHLC (Open, High, Low, Close) format using a specified window type.
 
 This resampler processes streaming market data and produces OHLC candlestick data for specified time intervals.
 It tracks the first price (Open), highest price (High), lowest price (Low), and last price (Close) within
 each time window, along with the total volume. This is the most common format for financial data visualization
 and technical analysis.
 
-The resampler automatically handles time window transitions, finalizing completed windows when new data
-belongs to a subsequent time period.
+The resampler automatically handles window transitions, finalizing completed windows when new data
+belongs to a subsequent window.
 
 # Type Parameters
 - `T`: Timestamp type (e.g., `DateTime`, `NanoDate`)
 - `P`: Price type (e.g., `Float64`, `FixedDecimal`)
 - `V`: Volume type (e.g., `Float64`, `FixedDecimal`)
+- `W`: Window type (e.g., `TimeWindow`, `VolumeWindow`, `TickWindow`)
 
 # Fields
-- `period::Period`: The resampling time period (e.g., `Minute(1)`, `Hour(1)`)
-- `current_window::Union{TimeWindow{T}, Nothing}`: The currently active time window
+- `window_spec::W`: The window specification (period for time, target for volume/ticks)
+- `current_window::Union{W, Nothing}`: The currently active window
 - `ohlc::Union{OHLC{P}, Nothing}`: Current OHLC values for the active window
 - `volume_sum::V`: Accumulated volume for the current window
 - `count::Int`: Number of data points processed in current window
@@ -209,118 +339,185 @@ belongs to a subsequent time period.
 ```julia
 using OnlineResamplers, OnlineStatsBase, Dates
 
-# Create a 1-minute OHLC resampler
+# Create a time-based 1-minute OHLC resampler
 resampler = OHLCResampler(Minute(1))
+
+# Create a volume-based OHLC resampler (1000 volume per bar)
+vol_resampler = OHLCResampler(VolumeWindow(1000.0))
+
+# Create a tick-based OHLC resampler (100 ticks per bar)
+tick_resampler = OHLCResampler(TickWindow(100))
 
 # Process market data
 data1 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 0), 100.0, 1000.0)
-data2 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 30), 105.0, 800.0)
-data3 = MarketDataPoint(DateTime(2024, 1, 1, 9, 30, 45), 98.0, 1200.0)
-
 fit!(resampler, data1)
-fit!(resampler, data2)
-fit!(resampler, data3)
 
 # Get current OHLC values
 result = value(resampler)
-println(result.ohlc)  # OHLC(100.0, 105.0, 98.0, 98.0)
-println(result.volume)  # 3000.0
+println(result.ohlc)  # OHLC(100.0, 100.0, 100.0, 100.0)
+println(result.volume)  # 1000.0
 ```
 
 See also: [`MarketResampler`](@ref), [`MeanResampler`](@ref), [`OHLC`](@ref)
 """
-mutable struct OHLCResampler{T,P,V} <: AbstractResampler{T,P,V}
-    period::Period
-    current_window::Union{TimeWindow{T}, Nothing}
+mutable struct OHLCResampler{T,P,V,W<:AbstractWindow} <: AbstractResampler{T,P,V,W}
+    window_spec::W
+    current_window::Union{W, Nothing}
     ohlc::Union{OHLC{P}, Nothing}
     volume_sum::V
     count::Int
     validate_chronological::Bool
     last_timestamp::Union{T, Nothing}
 
-    function OHLCResampler{T,P,V}(period::Period; validate_chronological::Bool = false) where {T,P,V}
-        new{T,P,V}(period, nothing, nothing, zero(V), 0, validate_chronological, nothing)
+    function OHLCResampler{T,P,V,W}(window_spec::W; validate_chronological::Bool = false) where {T,P,V,W<:AbstractWindow}
+        new{T,P,V,W}(window_spec, nothing, nothing, zero(V), 0, validate_chronological, nothing)
     end
 end
 
-# Convenience constructors
+# Convenience constructors for backward compatibility
 OHLCResampler(period::Period; validate_chronological::Bool = false) =
-    OHLCResampler{DateTime,Float64,Float64}(period; validate_chronological=validate_chronological)
+    OHLCResampler{DateTime,Float64,Float64,TimeWindow{DateTime}}(
+        TimeWindow{DateTime}(DateTime(0), period);
+        validate_chronological=validate_chronological
+    )
+
+# 3-parameter constructor for backward compatibility
+OHLCResampler{T,P,V}(period::Period; validate_chronological::Bool = false) where {T,P,V} =
+    OHLCResampler{T,P,V,TimeWindow{T}}(
+        TimeWindow{T}(T(0), period);
+        validate_chronological=validate_chronological
+    )
+
+# Constructor for TimeWindow
+OHLCResampler(window::TimeWindow{T}; validate_chronological::Bool = false) where T =
+    OHLCResampler{T,Float64,Float64,TimeWindow{T}}(window; validate_chronological=validate_chronological)
+
+# Constructor for VolumeWindow
+OHLCResampler(window::VolumeWindow{V}; validate_chronological::Bool = false) where V =
+    OHLCResampler{DateTime,Float64,V,VolumeWindow{V}}(window; validate_chronological=validate_chronological)
+
+# Constructor for TickWindow
+OHLCResampler(window::TickWindow; validate_chronological::Bool = false) =
+    OHLCResampler{DateTime,Float64,Float64,TickWindow}(window; validate_chronological=validate_chronological)
 
 """
-    MeanResampler{T,P,V} <: AbstractResampler{T,P,V}
+    MeanResampler{T,P,V,W} <: AbstractResampler{T,P,V,W}
 
-Resamples price data by calculating mean price over specified time periods.
+Resamples price data by calculating mean price over specified windows.
 """
-mutable struct MeanResampler{T,P,V} <: AbstractResampler{T,P,V}
-    period::Period
-    current_window::Union{TimeWindow{T}, Nothing}
+mutable struct MeanResampler{T,P,V,W<:AbstractWindow} <: AbstractResampler{T,P,V,W}
+    window_spec::W
+    current_window::Union{W, Nothing}
     price_sum::P
     volume_sum::V
     count::Int
     validate_chronological::Bool
     last_timestamp::Union{T, Nothing}
 
-    function MeanResampler{T,P,V}(period::Period; validate_chronological::Bool = false) where {T,P,V}
-        new{T,P,V}(period, nothing, zero(P), zero(V), 0, validate_chronological, nothing)
+    function MeanResampler{T,P,V,W}(window_spec::W; validate_chronological::Bool = false) where {T,P,V,W<:AbstractWindow}
+        new{T,P,V,W}(window_spec, nothing, zero(P), zero(V), 0, validate_chronological, nothing)
     end
 end
 
+# Convenience constructors
 MeanResampler(period::Period; validate_chronological::Bool = false) =
-    MeanResampler{DateTime,Float64,Float64}(period; validate_chronological=validate_chronological)
+    MeanResampler{DateTime,Float64,Float64,TimeWindow{DateTime}}(
+        TimeWindow{DateTime}(DateTime(0), period);
+        validate_chronological=validate_chronological
+    )
+
+# 3-parameter constructor for backward compatibility
+MeanResampler{T,P,V}(period::Period; validate_chronological::Bool = false) where {T,P,V} =
+    MeanResampler{T,P,V,TimeWindow{T}}(
+        TimeWindow{T}(T(0), period);
+        validate_chronological=validate_chronological
+    )
+
+MeanResampler(window::TimeWindow{T}; validate_chronological::Bool = false) where T =
+    MeanResampler{T,Float64,Float64,TimeWindow{T}}(window; validate_chronological=validate_chronological)
+
+MeanResampler(window::VolumeWindow{V}; validate_chronological::Bool = false) where V =
+    MeanResampler{DateTime,Float64,V,VolumeWindow{V}}(window; validate_chronological=validate_chronological)
+
+MeanResampler(window::TickWindow; validate_chronological::Bool = false) =
+    MeanResampler{DateTime,Float64,Float64,TickWindow}(window; validate_chronological=validate_chronological)
 
 """
-    SumResampler{T,P,V} <: AbstractResampler{T,P,V}
+    SumResampler{T,P,V,W} <: AbstractResampler{T,P,V,W}
 
-Resamples data by summing values over specified time periods (used for volume).
+Resamples data by summing values over specified windows (used for volume).
 """
-mutable struct SumResampler{T,P,V} <: AbstractResampler{T,P,V}
-    period::Period
-    current_window::Union{TimeWindow{T}, Nothing}
+mutable struct SumResampler{T,P,V,W<:AbstractWindow} <: AbstractResampler{T,P,V,W}
+    window_spec::W
+    current_window::Union{W, Nothing}
     sum::V
     count::Int
     validate_chronological::Bool
     last_timestamp::Union{T, Nothing}
 
-    function SumResampler{T,P,V}(period::Period; validate_chronological::Bool = false) where {T,P,V}
-        new{T,P,V}(period, nothing, zero(V), 0, validate_chronological, nothing)
+    function SumResampler{T,P,V,W}(window_spec::W; validate_chronological::Bool = false) where {T,P,V,W<:AbstractWindow}
+        new{T,P,V,W}(window_spec, nothing, zero(V), 0, validate_chronological, nothing)
     end
 end
 
+# Convenience constructors
 SumResampler(period::Period; validate_chronological::Bool = false) =
-    SumResampler{DateTime,Float64,Float64}(period; validate_chronological=validate_chronological)
+    SumResampler{DateTime,Float64,Float64,TimeWindow{DateTime}}(
+        TimeWindow{DateTime}(DateTime(0), period);
+        validate_chronological=validate_chronological
+    )
+
+# 3-parameter constructor for backward compatibility
+SumResampler{T,P,V}(period::Period; validate_chronological::Bool = false) where {T,P,V} =
+    SumResampler{T,P,V,TimeWindow{T}}(
+        TimeWindow{T}(T(0), period);
+        validate_chronological=validate_chronological
+    )
+
+SumResampler(window::TimeWindow{T}; validate_chronological::Bool = false) where T =
+    SumResampler{T,Float64,Float64,TimeWindow{T}}(window; validate_chronological=validate_chronological)
+
+SumResampler(window::VolumeWindow{V}; validate_chronological::Bool = false) where V =
+    SumResampler{DateTime,Float64,V,VolumeWindow{V}}(window; validate_chronological=validate_chronological)
+
+SumResampler(window::TickWindow; validate_chronological::Bool = false) =
+    SumResampler{DateTime,Float64,Float64,TickWindow}(window; validate_chronological=validate_chronological)
 
 """
-    MarketResampler{T,P,V}
+    MarketResampler{T,P,V,W}
 
 A composite resampler that combines separate price and volume resampling strategies.
 
 `MarketResampler` is the primary interface for resampling market data. It combines a price resampler
 (either OHLC or mean-based) with a volume resampler (sum-based) to provide comprehensive market data
-aggregation over specified time periods.
+aggregation over specified windows.
 
 This resampler automatically coordinates between price and volume aggregation strategies, ensuring
-consistent time window handling and providing a unified interface for accessing both price and volume
+consistent window handling and providing a unified interface for accessing both price and volume
 statistics.
 
 # Type Parameters
 - `T`: Timestamp type (e.g., `DateTime`, `NanoDate`)
 - `P`: Price type (e.g., `Float64`, `FixedDecimal`)
 - `V`: Volume type (e.g., `Float64`, `FixedDecimal`)
+- `W`: Window type (e.g., `TimeWindow`, `VolumeWindow`, `TickWindow`)
 
 # Fields
-- `price_resampler::AbstractResampler{T,P,V}`: Strategy for aggregating prices (OHLC or Mean)
-- `volume_resampler::AbstractResampler{T,P,V}`: Strategy for aggregating volumes (always Sum)
+- `price_resampler::AbstractResampler{T,P,V,W}`: Strategy for aggregating prices (OHLC or Mean)
+- `volume_resampler::AbstractResampler{T,P,V,W}`: Strategy for aggregating volumes (always Sum)
 
 # Examples
 ```julia
 using OnlineResamplers, OnlineStatsBase, Dates
 
-# Create OHLC resampler (default)
+# Create time-based OHLC resampler (default)
 ohlc_resampler = MarketResampler(Minute(1))
 
-# Create mean price resampler
-mean_resampler = MarketResampler(Minute(5), price_method=:mean)
+# Create volume-based OHLC resampler
+vol_resampler = MarketResampler(VolumeWindow(1000.0))
+
+# Create tick-based mean price resampler
+tick_resampler = MarketResampler(TickWindow(100), price_method=:mean)
 
 # With explicit types for high precision
 using FixedPointDecimals
@@ -341,48 +538,35 @@ println("Window: ", result.window)
 
 See also: [`OHLCResampler`](@ref), [`MeanResampler`](@ref), [`SumResampler`](@ref)
 """
-struct MarketResampler{T,P,V} <: OnlineStat{MarketDataPoint{T,P,V}}
-    price_resampler::AbstractResampler{T,P,V}
-    volume_resampler::AbstractResampler{T,P,V}
+struct MarketResampler{T,P,V,W<:AbstractWindow} <: OnlineStat{MarketDataPoint{T,P,V}}
+    price_resampler::AbstractResampler{T,P,V,W}
+    volume_resampler::AbstractResampler{T,P,V,W}
 end
 
-"""
-    MarketResampler{T,P,V}(period::Period; price_method=:ohlc, validate_chronological=false)
+# Convenience constructor for Period (time-based, backward compatibility)
+MarketResampler(period::Period; price_method::Symbol=:ohlc, validate_chronological::Bool=false) =
+    MarketResampler(TimeWindow{DateTime}(DateTime(0), period); price_method=price_method, validate_chronological=validate_chronological)
 
-Create a MarketResampler with specified types and period.
-
-# Example
-```julia
-using NanoDates, FixedPointDecimals
-
-# Create a resampler with NanoDates and FixedPointDecimals
-resampler = MarketResampler{NanoDate, FixedDecimal{Int64,4}, FixedDecimal{Int64,2}}(
-    Minute(1), price_method=:ohlc
-)
-
-# Default DateTime/Float64 version
-resampler = MarketResampler(Minute(1))
-```
-"""
-function MarketResampler{T,P,V}(period::Period; price_method::Symbol=:ohlc, validate_chronological::Bool=false) where {T,P,V}
+# Generic window-based constructor
+function MarketResampler(window::W; price_method::Symbol=:ohlc, validate_chronological::Bool=false) where {W<:AbstractWindow}
     price_resampler = if price_method == :ohlc
-        OHLCResampler{T,P,V}(period; validate_chronological=validate_chronological)
+        OHLCResampler(window; validate_chronological=validate_chronological)
     elseif price_method == :mean
-        MeanResampler{T,P,V}(period; validate_chronological=validate_chronological)
+        MeanResampler(window; validate_chronological=validate_chronological)
     else
         throw(ArgumentError("price_method must be :ohlc or :mean"))
     end
 
-    volume_resampler = SumResampler{T,P,V}(period; validate_chronological=validate_chronological)
-    return MarketResampler{T,P,V}(price_resampler, volume_resampler)
+    volume_resampler = SumResampler(window; validate_chronological=validate_chronological)
+    # Use the automatically generated outer constructor from the struct definition
+    return MarketResampler{typeof(price_resampler).parameters[1],
+                          typeof(price_resampler).parameters[2],
+                          typeof(price_resampler).parameters[3],
+                          W}(price_resampler, volume_resampler)
 end
 
-# Convenience constructor for common case
-MarketResampler(period::Period; price_method::Symbol=:ohlc, validate_chronological::Bool=false) =
-    MarketResampler{DateTime,Float64,Float64}(period; price_method=price_method, validate_chronological=validate_chronological)
-
 # Helper function for chronological validation
-function _validate_chronological_order!(resampler::AbstractResampler{T,P,V}, data::MarketDataPoint{T,P,V}) where {T,P,V}
+function _validate_chronological_order!(resampler::AbstractResampler{T,P,V,W}, data::MarketDataPoint{T,P,V}) where {T,P,V,W}
     if resampler.validate_chronological
         if resampler.last_timestamp !== nothing && data.datetime < resampler.last_timestamp
             throw(ArgumentError(
@@ -395,26 +579,42 @@ function _validate_chronological_order!(resampler::AbstractResampler{T,P,V}, dat
     end
 end
 
+# Helper to update window state for VolumeWindow
+function _update_window_state!(window::VolumeWindow{V}, data::MarketDataPoint{T,P,V}) where {T,P,V}
+    window.current_volume += data.volume
+end
+
+# Helper to update window state for TickWindow
+function _update_window_state!(window::TickWindow, data::MarketDataPoint)
+    window.current_ticks += 1
+end
+
+# Helper to update window state for TimeWindow (no-op, state is implicit)
+function _update_window_state!(window::TimeWindow, data::MarketDataPoint)
+    # Time windows don't need explicit state updates
+end
+
 # OnlineStatsBase interface implementation
 OnlineStatsBase.nobs(r::AbstractResampler) = r.count
 OnlineStatsBase.nobs(r::MarketResampler) = nobs(r.price_resampler)
 
-function OnlineStatsBase._fit!(resampler::OHLCResampler{T,P,V}, data::MarketDataPoint{T,P,V}) where {T,P,V}
+function OnlineStatsBase._fit!(resampler::OHLCResampler{T,P,V,W}, data::MarketDataPoint{T,P,V}) where {T,P,V,W<:AbstractWindow}
     # Validate chronological order if enabled
     _validate_chronological_order!(resampler, data)
 
     if resampler.current_window === nothing
         # Initialize first window
-        window_start = floor(data.datetime, resampler.period)
-        resampler.current_window = TimeWindow{T}(window_start, resampler.period)
+        resampler.current_window = next_window(resampler.window_spec, data)
     end
 
-    if !belongs_to_window(data.datetime, resampler.current_window)
+    if should_finalize(data, resampler.current_window)
         # Data belongs to a new window, finalize current and move to next
         _finalize_window!(resampler)
-        window_start = floor(data.datetime, resampler.period)
-        resampler.current_window = TimeWindow{T}(window_start, resampler.period)
+        resampler.current_window = next_window(resampler.window_spec, data)
     end
+
+    # Update window state (for volume/tick windows)
+    _update_window_state!(resampler.current_window, data)
 
     # Update OHLC for current window
     if resampler.ohlc === nothing
@@ -435,20 +635,21 @@ function OnlineStatsBase._fit!(resampler::OHLCResampler{T,P,V}, data::MarketData
     return resampler
 end
 
-function OnlineStatsBase._fit!(resampler::MeanResampler{T,P,V}, data::MarketDataPoint{T,P,V}) where {T,P,V}
+function OnlineStatsBase._fit!(resampler::MeanResampler{T,P,V,W}, data::MarketDataPoint{T,P,V}) where {T,P,V,W<:AbstractWindow}
     # Validate chronological order if enabled
     _validate_chronological_order!(resampler, data)
 
     if resampler.current_window === nothing
-        window_start = floor(data.datetime, resampler.period)
-        resampler.current_window = TimeWindow{T}(window_start, resampler.period)
+        resampler.current_window = next_window(resampler.window_spec, data)
     end
 
-    if !belongs_to_window(data.datetime, resampler.current_window)
+    if should_finalize(data, resampler.current_window)
         _finalize_window!(resampler)
-        window_start = floor(data.datetime, resampler.period)
-        resampler.current_window = TimeWindow{T}(window_start, resampler.period)
+        resampler.current_window = next_window(resampler.window_spec, data)
     end
+
+    # Update window state (for volume/tick windows)
+    _update_window_state!(resampler.current_window, data)
 
     resampler.price_sum += data.price
     resampler.volume_sum += data.volume
@@ -457,20 +658,21 @@ function OnlineStatsBase._fit!(resampler::MeanResampler{T,P,V}, data::MarketData
     return resampler
 end
 
-function OnlineStatsBase._fit!(resampler::SumResampler{T,P,V}, data::MarketDataPoint{T,P,V}) where {T,P,V}
+function OnlineStatsBase._fit!(resampler::SumResampler{T,P,V,W}, data::MarketDataPoint{T,P,V}) where {T,P,V,W<:AbstractWindow}
     # Validate chronological order if enabled
     _validate_chronological_order!(resampler, data)
 
     if resampler.current_window === nothing
-        window_start = floor(data.datetime, resampler.period)
-        resampler.current_window = TimeWindow{T}(window_start, resampler.period)
+        resampler.current_window = next_window(resampler.window_spec, data)
     end
 
-    if !belongs_to_window(data.datetime, resampler.current_window)
+    if should_finalize(data, resampler.current_window)
         _finalize_window!(resampler)
-        window_start = floor(data.datetime, resampler.period)
-        resampler.current_window = TimeWindow{T}(window_start, resampler.period)
+        resampler.current_window = next_window(resampler.window_spec, data)
     end
+
+    # Update window state (for volume/tick windows)
+    _update_window_state!(resampler.current_window, data)
 
     resampler.sum += data.volume
     resampler.count += 1
@@ -478,13 +680,13 @@ function OnlineStatsBase._fit!(resampler::SumResampler{T,P,V}, data::MarketDataP
     return resampler
 end
 
-function OnlineStatsBase._fit!(resampler::MarketResampler{T,P,V}, data::MarketDataPoint{T,P,V}) where {T,P,V}
+function OnlineStatsBase._fit!(resampler::MarketResampler{T,P,V,W}, data::MarketDataPoint{T,P,V}) where {T,P,V,W}
     fit!(resampler.price_resampler, data)
     fit!(resampler.volume_resampler, data)
     return resampler
 end
 
-function _finalize_window!(resampler::AbstractResampler{T,P,V}) where {T,P,V}
+function _finalize_window!(resampler::AbstractResampler{T,P,V,W}) where {T,P,V,W}
     # Reset the current window data
     if resampler isa OHLCResampler
         resampler.ohlc = nothing
@@ -499,14 +701,14 @@ function _finalize_window!(resampler::AbstractResampler{T,P,V}) where {T,P,V}
 end
 
 # Value extraction
-function OnlineStatsBase.value(resampler::OHLCResampler{T,P,V}) where {T,P,V}
+function OnlineStatsBase.value(resampler::OHLCResampler{T,P,V,W}) where {T,P,V,W}
     if resampler.ohlc === nothing
         return (ohlc=nothing, volume=zero(V), window=resampler.current_window)
     end
     return (ohlc=resampler.ohlc, volume=resampler.volume_sum, window=resampler.current_window)
 end
 
-function OnlineStatsBase.value(resampler::MeanResampler{T,P,V}) where {T,P,V}
+function OnlineStatsBase.value(resampler::MeanResampler{T,P,V,W}) where {T,P,V,W}
     if resampler.count == 0
         return (mean_price=zero(P)/one(P), volume=zero(V), window=resampler.current_window)  # NaN equivalent
     end
@@ -517,18 +719,18 @@ function OnlineStatsBase.value(resampler::MeanResampler{T,P,V}) where {T,P,V}
     )
 end
 
-function OnlineStatsBase.value(resampler::SumResampler{T,P,V}) where {T,P,V}
+function OnlineStatsBase.value(resampler::SumResampler{T,P,V,W}) where {T,P,V,W}
     return (sum=resampler.sum, window=resampler.current_window)
 end
 
-function OnlineStatsBase.value(resampler::MarketResampler{T,P,V}) where {T,P,V}
+function OnlineStatsBase.value(resampler::MarketResampler{T,P,V,W}) where {T,P,V,W}
     price_value = value(resampler.price_resampler)
     volume_value = value(resampler.volume_resampler)
     return (price=price_value, volume=volume_value.sum, window=price_value.window)
 end
 
 # Merge implementation for parallel processing
-function OnlineStatsBase._merge!(resampler1::OHLCResampler{T,P,V}, resampler2::OHLCResampler{T,P,V}) where {T,P,V}
+function OnlineStatsBase._merge!(resampler1::OHLCResampler{T,P,V,W}, resampler2::OHLCResampler{T,P,V,W}) where {T,P,V,W}
     if resampler2.ohlc !== nothing
         if resampler1.ohlc === nothing
             resampler1.ohlc = resampler2.ohlc
@@ -548,14 +750,14 @@ function OnlineStatsBase._merge!(resampler1::OHLCResampler{T,P,V}, resampler2::O
     return resampler1
 end
 
-function OnlineStatsBase._merge!(resampler1::MeanResampler{T,P,V}, resampler2::MeanResampler{T,P,V}) where {T,P,V}
+function OnlineStatsBase._merge!(resampler1::MeanResampler{T,P,V,W}, resampler2::MeanResampler{T,P,V,W}) where {T,P,V,W}
     resampler1.price_sum += resampler2.price_sum
     resampler1.volume_sum += resampler2.volume_sum
     resampler1.count += resampler2.count
     return resampler1
 end
 
-function OnlineStatsBase._merge!(resampler1::SumResampler{T,P,V}, resampler2::SumResampler{T,P,V}) where {T,P,V}
+function OnlineStatsBase._merge!(resampler1::SumResampler{T,P,V,W}, resampler2::SumResampler{T,P,V,W}) where {T,P,V,W}
     resampler1.sum += resampler2.sum
     resampler1.count += resampler2.count
     return resampler1
