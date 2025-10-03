@@ -40,7 +40,7 @@ println("Volume: $(result.volume)")    # 1000.0
 
 ## Documentation
 
-📖 **[Complete Documentation](docs/)**
+📖 **[Complete Documentation (dev)](https://femtotrader.github.io/OnlineResamplers.jl/dev/)**
 
 ### Build Documentation Locally
 
