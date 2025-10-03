@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-OnlineResamplers.jl was developed with significant AI assistance from Claude 3.5 Sonnet (Anthropic). While the package has been extensively tested and validated, users should understand the implications of AI-generated code and exercise appropriate due diligence.
+OnlineResamplers.jl was developed with significant AI assistance from Claude Sonnet 4.5 (Anthropic). While the package has been extensively tested and validated, users should understand the implications of AI-generated code and exercise appropriate due diligence.
 
 **Key Facts:**
 - ~60% of source code AI-assisted
@@ -23,7 +23,7 @@ OnlineResamplers.jl was developed with significant AI assistance from Claude 3.5
 | Aspect | Details |
 |--------|---------|
 | **Tool** | Claude Code by Anthropic |
-| **Model** | Claude 3.5 Sonnet |
+| **Model** | Claude Sonnet 4.5 |
 | **Model Version** | claude-sonnet-4-5-20250929 |
 | **Knowledge Cutoff** | January 2025 |
 | **Generation Period** | September-October 2025 |
@@ -579,5 +579,5 @@ While AI-generated code requires appropriate scrutiny, this package has been dev
 
 **Last Updated**: 2025-10-03
 **Document Version**: 1.0
-**Package Version**: 0.1.0
-**AI Tool**: Claude 3.5 Sonnet (claude-sonnet-4-5-20250929)
+**Package Version**: 0.1.1
+**AI Tool**: Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)

@@ -6,7 +6,7 @@
 
 > **⚠️ AI-Generated Code Notice**
 >
-> Significant portions of this package were developed with AI assistance (Claude 3.5 Sonnet). While extensively tested (>90% coverage, 94 BDD scenarios), users should exercise appropriate due diligence for production use.
+> Significant portions of this package were developed with AI assistance (Claude Sonnet 4.5). While extensively tested (>90% coverage, 94 BDD scenarios), users should exercise appropriate due diligence for production use.
 >
 > **📋 [Read Full AI Transparency Notice →](AI_NOTICE.md)** | **📖 [Detailed Documentation →](https://femtotrader.github.io/OnlineResamplers.jl/dev/ai_transparency/)**
 

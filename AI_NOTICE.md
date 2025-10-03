@@ -7,7 +7,7 @@
 ## AI Tools Used
 
 - **Tool**: Claude Code (Anthropic)
-- **Model**: Claude 3.5 Sonnet
+- **Model**: Claude Sonnet 4.5
 - **Version**: claude-sonnet-4-5-20250929
 - **Scope**: Code generation, testing, documentation, and specifications
 
@@ -103,5 +103,5 @@ If you have concerns or questions about AI-generated content:
 ---
 
 **Last Updated**: 2025-10-03
-**AI Tool Version**: Claude 3.5 Sonnet (claude-sonnet-4-5-20250929)
-**Package Version**: 0.1.0
+**AI Tool Version**: Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
+**Package Version**: 0.1.1
